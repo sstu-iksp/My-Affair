@@ -11,32 +11,7 @@ using System.Runtime.InteropServices;
 namespace Construct
 {
 	static class Core					// Методы для создания разных объектов Control
-	{		
-		internal static PictureBox CreatePB(Panel pan, int left, int top, int width, int height, bool b)
-		{
-			PictureBox pb = new PictureBox();	// Объявление PB
-			pb.Left = left;						// Присваивание значений
-			pb.Top = top;
-			pb.Width = width;
-			pb.Height = height;
-			pb.SizeMode = PictureBoxSizeMode.StretchImage;	// Стиль отображения картинки
-			pb.Parent = pan;
-			pb.BackColor = Color.Transparent;				// Указываем родителя
-			pan.Controls.Add(pb);
-			return pb;
-		}
-		
-		internal static Panel CreatePan(int left, int top, int width, int height)
-		{
-			Panel pan = new Panel();
-			pan.Left = left;
-			pan.Top = top;
-			pan.Width = width;
-			pan.Height = height;
-			pan.Visible = false;
-			pan.BackgroundImageLayout = ImageLayout.Stretch;
-			return pan;
-		}
+	{
 		internal static void CreateWindow(Form form, int left, int top, int width, int height, string caption)
 		{
 			form.Left = left;
@@ -45,23 +20,6 @@ namespace Construct
 			form.Text = caption;
 		}
 		
-		internal static PictureBox CreatePB(Panel pan, int left, int top, int width, int height)
-		{
-			PictureBox pb = new PictureBox();
-			
-			pb.Left = left;
-			pb.Top = top;
-			pb.Width = width;
-			pb.Height = height;
-			
-			pb.SizeMode = PictureBoxSizeMode.StretchImage;
-			
-			pan.Controls.Add(pb);
-			
-			return pb;
-		}
-		
-
 		internal static Panel CreatePan(Panel panel, int left, int top, int width, int height)
 		{
 			Panel pan = new Panel();
@@ -81,6 +39,48 @@ namespace Construct
 			panel.Controls.Add(pan);
 			
 			return pan;
+		}
+		
+		internal static Panel CreatePan(int left, int top, int width, int height)
+		{
+			Panel pan = new Panel();
+			pan.Left = left;
+			pan.Top = top;
+			pan.Width = width;
+			pan.Height = height;
+			pan.Visible = false;
+			pan.BackgroundImageLayout = ImageLayout.Stretch;
+			return pan;
+		}
+		
+		internal static PictureBox CreatePB(Panel pan, int left, int top, int width, int height, bool b)
+		{
+			PictureBox pb = new PictureBox();	// Объявление PB
+			pb.Left = left;						// Присваивание значений
+			pb.Top = top;
+			pb.Width = width;
+			pb.Height = height;
+			pb.SizeMode = PictureBoxSizeMode.StretchImage;	// Стиль отображения картинки
+			pb.Parent = pan;
+			pb.BackColor = Color.Transparent;				// Указываем родителя
+			pan.Controls.Add(pb);
+			return pb;
+		}
+		
+		internal static PictureBox CreatePB(Panel pan, int left, int top, int width, int height)
+		{
+			PictureBox pb = new PictureBox();
+			
+			pb.Left = left;
+			pb.Top = top;
+			pb.Width = width;
+			pb.Height = height;
+			
+			pb.SizeMode = PictureBoxSizeMode.StretchImage;
+			
+			pan.Controls.Add(pb);
+			
+			return pb;
 		}
 		
 		internal static Label CreateLab(Panel pan, int left, int top, int width, int height, float F)
@@ -125,9 +125,6 @@ namespace Construct
 			
 			return lab;
 		}
-		
-		
-		
 	}	
 }
 

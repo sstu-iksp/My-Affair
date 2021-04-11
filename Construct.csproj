@@ -59,6 +59,9 @@
     <Compile Include="Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Events.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Initializer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>

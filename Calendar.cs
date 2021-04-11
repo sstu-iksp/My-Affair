@@ -21,12 +21,13 @@ namespace Construct
 			internal int panQ;
 			internal Panel panDay;
 			internal Label labDay;
+			internal Label labAddCase;
 			internal List<Panel> panCase = new List<Panel>();
 			
-			internal Day(string name, Panel panDay)
+			internal Day(string name, Panel pan)
 			{
 				this.name = name;
-				this.panDay = panDay;
+				panDay = pan;
 				
 				// Начальная настройка панели и надписи
 				panDay.BackColor = Color.FromArgb(129, 212, 238);
@@ -34,7 +35,13 @@ namespace Construct
 				labDay = Core.CreateLab(this.panDay, 5, 5, 165, 20, 12);
 				labDay.BackColor = Color.FromArgb(129, 222, 238);
 				labDay.Text = this.name;
-				labDay.Visible = true;
+				labAddCase  = Core.CreateLab(this.panDay, 5, panDay.Height - 32, panDay.Width - 10, 27, 18);
+				labAddCase.BackColor = Color.FromArgb(129, 212, 228);
+				labAddCase.Text = "+";
+				labAddCase.TextAlign = ContentAlignment.MiddleCenter;
+				
+				labAddCase.MouseClick += (MouseClick_labAddCase);	// Нажатие			***
+				
 			}
 			
 			// Метод добавляющий новую задачу
@@ -49,6 +56,18 @@ namespace Construct
 			{
 				panCase.Remove(pan);
 				panQ--;
+			}
+			
+			// Событие нажатия на кнопку "Добавить (+)"
+			internal void MouseClick_labAddCase(object sender, MouseEventArgs e)
+			{
+				if (e.Button == MouseButtons.Left)
+				{
+					if ((sender as Label) != null)
+					{
+						caseAdd(MainForm.Copy_Case(panDay, 3, 28 + panQ * 105));
+					}
+				}
 			}
 		}
 	}
