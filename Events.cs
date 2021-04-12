@@ -39,6 +39,9 @@ namespace Construct
 				if ((sender as Panel) != null) 	actP = (sender as Panel);
 				else if ((sender as Label) != null)	actP = (Panel)(sender as Label).Parent;
 				
+				actP.Parent.Controls.Remove(actP);		// ыыы
+				form.Controls.Add(actP);				// (тест или нет)
+				
 				actX = actP.Left;
 				actY = actP.Top;
 				// Переносим на передний план
@@ -59,7 +62,16 @@ namespace Construct
 					if ((actP.Left + actP.Width/2 > days[i].panDay.Left) && (actP.Left + actP.Width/2 < days[i].panDay.Left + days[i].panDay.Width)
 					   && (actP.Top + actP.Height/2 > days[i].panDay.Top) && (actP.Top + actP.Height/2 < days[i].panDay.Top + days[i].panDay.Height))
 					{
-						days[i].panDay.Controls.Add(Copy_Case(days[i].panDay, 3, 28 + (days[i].panDay.Controls.Count - 1) * 105));
+						if (days[i].panCase.LastOrDefault() != null)			// ***
+						{
+							days[i].panDay.Controls.Add(Copy_Case(days[i].panDay, 3, days[i].panCase.LastOrDefault().Top + days[i].panCase.LastOrDefault().Height + 3));
+						}
+						else
+						{
+							days[i].panDay.Controls.Add(Copy_Case(days[i].panDay, 3, 28));
+						}
+						
+						form.Controls.Remove(actP);	// (тест или нет)
 						
 						break;
 					}
@@ -99,19 +111,6 @@ namespace Construct
                 	(sender as Panel).Controls[i].Location = new Point((sender as Panel).Controls[i].Location.X, (sender as Panel).Controls[i].Location.Y + d.Y);
             }            
         }
-        
-        // Прокрутка дня колесиком мыши
-		internal void MouseWheel_pmp(object sender, MouseEventArgs e)
-		{
-			// '20' - скорость прокрутки, чем больше значение тем медленнее
-	//		foreach (Control ctrl in (sender as Panel).Controls)
-    //        		ctrl.Location = new Point(ctrl.Location.X, ctrl.Location.Y - e.Delta / 20);
-			
-			for(int i = 2; i < (sender as Panel).Controls.Count; i++)
-				(sender as Panel).Controls[i].Location = new Point((sender as Panel).Controls[i].Location.X, (sender as Panel).Controls[i].Location.Y - e.Delta / 20);
-		}
-		
-
 		
 		// Событие наведения на кнопку добавления новой задачи
 		internal void MouseEnter_labAddCase(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 208); }

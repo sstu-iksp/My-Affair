@@ -42,6 +42,7 @@ namespace Construct
 				
 				labAddCase.MouseClick += (MouseClick_labAddCase);	// Нажатие			***
 				
+				panDay.MouseWheel += (MouseWheel_pmp);
 			}
 			
 			// Метод добавляющий новую задачу
@@ -68,6 +69,14 @@ namespace Construct
 						caseAdd(MainForm.Copy_Case(panDay, 3, 28 + panQ * 105));
 					}
 				}
+			}
+			
+			// Прокрутка дня колесиком мыши
+			internal void MouseWheel_pmp(object sender, MouseEventArgs e)
+			{
+				// '20' - скорость прокрутки, чем больше значение тем медленнее скорость прокрутки
+				foreach (Panel pan in panCase)
+	            		pan.Location = new Point(pan.Location.X, pan.Location.Y + e.Delta / 20);
 			}
 		}
 	}

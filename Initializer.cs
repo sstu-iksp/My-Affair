@@ -32,7 +32,7 @@ namespace Construct
 				weekday[i].BackColor = Color.FromArgb(129, 212, 238);
 				weekday[i].Visible = true;
 				weekday[i].MouseMove += (MouseMove_pmp);	//************
-				weekday[i].MouseWheel += (MouseWheel_pmp);	//************
+	//			weekday[i].MouseWheel += (MouseWheel_pmp);	//************
 				
 				weekdayName[i].BackColor = Color.FromArgb(129, 222, 238);
 				weekdayName[i].Text = wn[i];

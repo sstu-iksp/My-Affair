@@ -12,6 +12,8 @@ namespace Construct
 {
 	partial class MainForm
 	{
+		// Главная и единственная форма
+		static Form form;
 		// Главная панель
 		static Panel panMidPanel = Core.CreatePan(0, 0, 1280, 720);
 		
@@ -24,7 +26,7 @@ namespace Construct
 			// Блокировка полноэкранного режима
 			MaximizeBox = false;
 			// Метод создающий окно
-			Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
+			form = Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
 			
 			// Отображаем главную панель
 			panMidPanel.Visible = true;
@@ -34,6 +36,8 @@ namespace Construct
 			InitializeW();
 			// Вывод тестовой задачи
 			InitializeCase();
+			
+			InitializeReg();
 			
 			// Вывод дней недели
 	//		InitializeWeek();	// (тест)
@@ -51,22 +55,19 @@ namespace Construct
 				
 				// События привязанные к панели дня
 				days[i].panDay.MouseMove += (MouseMove_pmp);	// Прокрутка задач дня левой кнопкой мыши	***
-				days[i].panDay.MouseWheel += (MouseWheel_pmp);	// Прокрутка задач дня колесиком мыши		***
+	//			days[i].panDay.MouseWheel += (MouseWheel_pmp);	// Прокрутка задач дня колесиком мыши		***
 				
 				days[i].labAddCase.MouseEnter += (MouseEnter_labAddCase);	// Наведение			***
 				days[i].labAddCase.MouseLeave += (MouseLeave_labAddCase);	// Наведение			***
 				
-				
 			}
-			
-			
-			
 		}
 		
 		
 		static int panNum;
 		static List<Panel> panCase = new List<Panel>();
 		
+		// Временный метод позволяющий копировать задачу
 		internal static Panel Copy_Case(Panel pan, int x, int y)
 		{
 			//weekday
@@ -90,8 +91,6 @@ namespace Construct
 			labCaseTimeT.Text = "Time";
 			labCaseDescT.Text = "Description\nyep";
 			
-			panCase[panNum].Visible = true;
-			
 			// Присваиваем события для панели и ее составляющих
 			panCase[panNum].MouseMove += (MouseMove_Case);
 			labCaseNameT.MouseMove += (MouseMove_Case);
@@ -105,6 +104,8 @@ namespace Construct
 			labCaseNameT.MouseUp += (MouseUp_Case);
 			labCaseTimeT.MouseUp += (MouseUp_Case);
 			labCaseDescT.MouseUp += (MouseUp_Case);
+			
+			panCase[panNum].Visible = true;
 			
 			return panCase[panNum++];
 		}
