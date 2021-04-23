@@ -15,70 +15,67 @@ namespace Construct
 		// Класс имеет 00 поля и 00 метода, он нужен для создания дней, которые будут отображаться на экране просмотра недели
 		// поля состоят из названия, кол-ва задач привязанных ко дню, панель дня, надпись названия, коллекция панелиц задач
 		// методы позовляют добавить новую задачу и удалить задачу
-		internal class Day														// 		*В РАЗРАБОТКЕ*
+
+		internal class Year
 		{
-			internal string name;
-			internal int panQ;
-			internal Panel panDay;
-			internal Label labDay;
-			internal Label labAddCase;
-			internal List<Panel> panCase = new List<Panel>();
-			
-			internal Day(string name, Panel pan)
+			internal int yearInt;
+			internal List<Month> listMonth = new List<Month>();
+
+			internal Year(int year)
 			{
-				this.name = name;
-				panDay = pan;
-				
-				// Начальная настройка панели и надписи
-				panDay.BackColor = Color.FromArgb(129, 212, 238);
-				panDay.Visible = true;
-				labDay = Core.CreateLab(this.panDay, 5, 5, 165, 20, 12);
-				labDay.BackColor = Color.FromArgb(129, 222, 238);
-				labDay.Text = this.name;
-				labAddCase  = Core.CreateLab(this.panDay, 5, panDay.Height - 32, panDay.Width - 10, 27, 18);
-				labAddCase.BackColor = Color.FromArgb(129, 212, 228);
-				labAddCase.Text = "+";
-				labAddCase.TextAlign = ContentAlignment.MiddleCenter;
-				
-				labAddCase.MouseClick += (MouseClick_labAddCase);	// Нажатие			***
-				
-				panDay.MouseWheel += (MouseWheel_pmp);
+				yearInt = year;
+				for (int i = 0; i < 12; i++)
+					listMonth.Add(new Month(i, yearInt));
 			}
-			
-			// Метод добавляющий новую задачу
-			internal void caseAdd(Panel pan)
-			{
-				panCase.Add(pan);
-				panQ++;
-			}
-			
-			// Метод удаляющий задачу
-			internal void caseRemove(Panel pan)
-			{
-				panCase.Remove(pan);
-				panQ--;
-			}
-			
-			// Событие нажатия на кнопку "Добавить (+)"
-			internal void MouseClick_labAddCase(object sender, MouseEventArgs e)
-			{
-				if (e.Button == MouseButtons.Left)
-				{
-					if ((sender as Label) != null)
-					{
-						caseAdd(MainForm.Copy_Case(panDay, 3, 28 + panQ * 105));
-					}
-				}
-			}
-			
-			// Прокрутка дня колесиком мыши
-			internal void MouseWheel_pmp(object sender, MouseEventArgs e)
-			{
-				// '20' - скорость прокрутки, чем больше значение тем медленнее скорость прокрутки
-				foreach (Panel pan in panCase)
-	            		pan.Location = new Point(pan.Location.X, pan.Location.Y + e.Delta / 20);
-			}
+
 		}
+
+		internal class Month
+		{
+			internal int monthInt;
+			internal List<Day> listDay = new List<Day>();
+
+			internal Month(int number, int year)
+			{
+				monthInt = number;
+
+				for (int i = 0; i < DateTime.DaysInMonth(year, monthInt); i++)
+					listDay.Add(new Day(i));
+			}
+
+		}
+
+		internal class Day
+		{
+			internal int dayInt;
+			internal List<Case> panCase = new List<Case>();
+
+			internal Day(int day)
+			{
+				this.dayInt = day;
+			}
+
+		}
+
+		internal class Case
+		{
+			internal string nameCase;
+			internal string discription;
+			internal string lastTime;
+			internal string firstTime;
+
+			internal Case(string nameCase, string discription, string lastTime, string firstTime)
+			{
+				this.nameCase = nameCase;
+				this.discription = discription;
+				this.lastTime = lastTime;
+				this.firstTime = firstTime;
+			}
+
+		}
+
+
+
 	}
 }
 
