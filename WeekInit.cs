@@ -85,15 +85,24 @@ namespace Construct
 				Label labCaseTimeT = Core.CreateLab(p, 110, 5, 55, 20, 11);
 				Label labCaseDescT = Core.CreateLab(p, 5, 26, 160, 70, 9);
 				
-				TextBox boxCaseNameT = Core.CreateBox(p, 5, 5, 105, 20, 11, true);
+				TextBox boxCaseNameT = Core.CreateBox(p, 5, 5, 105, 20, 10, true);
 			//	TextBox boxCaseTimeT = Core.CreateBox(p, 110, 5, 55, 20, 11, true);
+				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 110, 5, 55, 20, 8, true);	// Проблемы с размерами (Высота независима)
 				TextBox boxCaseDescT = Core.CreateBox(p, 5, 26, 160, 70, 9, true);
 				
-				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 110, 5, 55, 20, 9, true);	// Проблемы с размерами (Высота независима)
+				labCaseNameT.TabIndex = 0;
+				labCaseTimeT.TabIndex = 1;
+				labCaseDescT.TabIndex = 2;
+				boxCaseNameT.TabIndex = 3;
+				boxCaseTimeT.TabIndex = 4;
+				boxCaseDescT.TabIndex = 5;
 				
+				boxCaseNameT.BackColor = Color.FromArgb(133, 238, 176);
+				boxCaseNameT.MaxLength = 10;
 				boxCaseTimeT.BackColor = Color.FromArgb(133, 238, 176);
-				boxCaseTimeT.MaxLength = 5;
 				boxCaseTimeT.Mask = "00:00-00:00";
+				boxCaseDescT.BackColor = Color.FromArgb(133, 238, 176);
+				boxCaseDescT.MaxLength = 50;
 				
 				p.BackColor = Color.FromArgb(133, 238, 186);
 				
@@ -130,6 +139,11 @@ namespace Construct
 				boxCaseTimeT.MouseDown += (MouseDown_Case);
 				boxCaseDescT.MouseDown += (MouseDown_Case);
 				
+				p.MouseClick += (MouseClick_Outside);				// Для заполнения задачи	#
+				labCaseNameT.MouseClick += (MouseClick_Outside);	// Для заполнения задачи	#
+				labCaseTimeT.MouseClick += (MouseClick_Outside);	// Для заполнения задачи	#
+				labCaseDescT.MouseClick += (MouseClick_Outside);	// Для заполнения задачи	#
+				
 				p.Visible = true;
 				
 		//		panCase.Add(p);
@@ -137,7 +151,7 @@ namespace Construct
 				return p;
 			}	
 			
-			// Метод перересоввающий весь список задач
+			// Метод перерисовывающий весь список задач
 			internal void panCaseRedraw()
 			{
 				posBot = posTop;
@@ -146,6 +160,12 @@ namespace Construct
 					pan.Top = posBot;
 					posBot += pan.Height + 3;
 				}
+			}
+			
+			// Метод переписывающий задачу
+			internal void panCaseRewrite()
+			{
+				
 			}
 			
 			// Прокрутка списка задач колесиком мыши

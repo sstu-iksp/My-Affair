@@ -16,11 +16,15 @@ namespace Construct
 	{
 		// Переменная для проверки активности панели
 		static bool act;
+		// Перемнная для определения режима заполнения задачи
+		static bool compl;
 		// Переменная для запоминания активной панели
 		static Panel actP;
 		static Panel actP2;
 		// Переменная для запоминания номера начального дня
 		static int beginDay;
+		// Переменная для запоминания номера начальной задачи
+		static int beginCase;
 		// Переменные для запоминания начальных координат панели (для теста)
 		static int actX;
 		static int actY;
@@ -58,7 +62,7 @@ namespace Construct
 				// Показываем что панель активна
 				act = true;
 			}
-			if (e.Button == MouseButtons.Right)
+			if (e.Button == MouseButtons.Right && !compl)
 			{
 				if ((sender as Panel) != null)		actP2 = (sender as Panel);
 				else if ((sender as Label) != null)	actP2 = (Panel)(sender as Label).Parent;
@@ -67,6 +71,10 @@ namespace Construct
 				{
 					if ((ctrl as TextBox) != null || (ctrl as MaskedTextBox) != null) ctrl.BringToFront();
 				}
+				beginDay = actP2.Parent.TabIndex;
+				beginCase = days[beginDay].panCase.IndexOf(actP2);
+				
+				compl = true;
 			}
 		}
 		
@@ -96,11 +104,16 @@ namespace Construct
 							days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, 28));
 						}
 						*/
-						days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot));
+						form.Controls.Remove(actP);							// ДОБАВИТЬ КОММЕНТЫ !!!
+						days[i].panDay.Controls.Add(actP);
+						days[i].panCase.Add(actP);
+						actP.Left = 3;
+						actP.Top = days[i].posBot;
+				//		days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot));	// ---
 						// Удаляем задачу из колекции начального дня
 						days[beginDay].panCase.Remove(actP);
 						days[i].posBot += actP.Height + 3;
-						actP.Dispose();
+				//		actP.Dispose();																// ---
 					//	form.Controls.Remove(actP);	// (тест или нет)
 						cancel = false;						
 						// Перерисовываем список задач начального дня
@@ -134,6 +147,53 @@ namespace Construct
 			}
 		}
 		
+		// Метод для закрытия режима редактирования задачи
+		internal static void MouseClick_Outside(object sender, MouseEventArgs e)
+		{
+			string name = "";
+			string time = "";
+			string desc = "";
+			
+			if (e.Button == MouseButtons.Left && compl)
+			{
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+				{
+					if (ctrl.TabIndex == 3)
+					{
+						name = ctrl.Text;
+					}
+					else if (ctrl.TabIndex == 4)
+					{
+						time = ctrl.Text;
+					}
+					else if (ctrl.TabIndex == 5)
+					{
+						desc = ctrl.Text;
+					}
+				}
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+				{
+					if (ctrl.TabIndex == 0)
+					{
+						ctrl.Text = name;
+					}
+					else if (ctrl.TabIndex == 1)
+					{
+						ctrl.Text = time;
+					}
+					else if (ctrl.TabIndex == 2)
+					{
+						ctrl.Text = desc;
+					}
+					
+				}
+				foreach (Control ctrl in actP2.Controls)
+					if ((ctrl as Label) != null) ctrl.BringToFront();
+				compl = false;
+			}
+		}
+		
+		
 		internal Point prevMousePos;
 		// Прокурутка дня левой кнопкой мыши (тест)
         internal void MouseMove_pmp(object sender, MouseEventArgs e)
@@ -149,7 +209,7 @@ namespace Construct
 	//			foreach (Control ctrl in (sender as Panel).Controls)
 	//				ctrl.Location = new Point(ctrl.Location.X, ctrl.Location.Y + d.Y);
                 
-                for(int i = 2; i < (sender as Panel).Controls.Count; i++)
+                for(int i = 1; i < (sender as Panel).Controls.Count; i++)
                 	(sender as Panel).Controls[i].Location = new Point((sender as Panel).Controls[i].Location.X + d.X, (sender as Panel).Controls[i].Location.Y + d.Y);
             }            
         }

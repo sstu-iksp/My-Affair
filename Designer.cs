@@ -28,6 +28,8 @@ namespace Construct
 			MaximizeBox = false;
 			// Создаем основную форму
 			form = Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
+			// Включаем возможность отслеживания нажатия клавиш
+			form.KeyPreview = true;
 			
 			// Отображаем главную панель
 			panWeekMain.Visible = true;
@@ -40,6 +42,8 @@ namespace Construct
 			InitializeButtons();
 			
 			panWeekMain.MouseMove += (MouseMove_pmp);	// Зачем?
+			
+			panWeekMain.MouseClick += (MouseClick_Outside);	// Для заполнения задачи
 		}
 		
 		// Коллекция для хранения дней недели
@@ -61,6 +65,9 @@ namespace Construct
 				days[i].labAddCase.MouseEnter += (MouseEnter_labAddCase);	// Наведение			***
 				days[i].labAddCase.MouseLeave += (MouseLeave_labAddCase);	// Наведение			***
 				
+				days[i].panDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
+				days[i].labDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
+				days[i].labAddCase.MouseClick += (MouseClick_Outside);		// Для заполнения задачи	#
 			}
 		}
 		
