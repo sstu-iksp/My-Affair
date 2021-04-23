@@ -35,27 +35,24 @@ namespace Construct
 			
 			// Вывод дней недели
 			InitializeWeek();
-			// Вывод тестовой задачи
-			InitializeCase();
 			
 			InitializeReg();
 			InitializeButtons();
 			
-			panWeekMain.MouseMove += (MouseMove_pmp);
-			
-			// Вывод дней недели
-	//		InitializeW();	// (тест)
+			panWeekMain.MouseMove += (MouseMove_pmp);	// Зачем?
 		}
 		
 		// Коллекция для хранения дней недели
 		static internal List<Day> days = new List<Day>();
+		// Просто массив с днями недели
+		string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 		
 		// Метод создающий дни недели, которые отображаются на экран, размер дня 175x400 px
 		internal void InitializeWeek()
 		{
 			for(int i = 0; i < 7; i++)
 			{
-				days.Add(new Day(wn[i], Core.CreatePan(panWeekMain, 15 + i * 180, 100, 175, 400)));
+				days.Add(new Day(wn[i], Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 400)));
 				days[i].panDay.TabIndex = i;
 				// События привязанные к панели дня
 	//			days[i].panDay.MouseMove += (MouseMove_pmp);	// Прокрутка задач дня левой кнопкой мыши	***

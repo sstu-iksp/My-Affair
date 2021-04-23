@@ -12,16 +12,7 @@ namespace Construct
 {
 	partial class MainForm
 	{
-		internal class Draw											// 		*В РАЗРАБОТКЕ*
-		{
-			
-		}
-		
-		internal class Week											// 		*В РАЗРАБОТКЕ*
-		{
-			
-		}
-		
+		// Класс отвечающий за ввод дней недели на экран
 		internal class Day											// 		*В РАЗРАБОТКЕ*
 		{
 			// Координаты для прокрутки задач
@@ -93,7 +84,16 @@ namespace Construct
 				Label labCaseNameT = Core.CreateLab(p, 5, 5, 105, 20, 11);
 				Label labCaseTimeT = Core.CreateLab(p, 110, 5, 55, 20, 11);
 				Label labCaseDescT = Core.CreateLab(p, 5, 26, 160, 70, 9);
-				PictureBox pbTest = Core.CreatePB(p, 1, 1, 1, 1);
+				
+				TextBox boxCaseNameT = Core.CreateBox(p, 5, 5, 105, 20, 11, true);
+			//	TextBox boxCaseTimeT = Core.CreateBox(p, 110, 5, 55, 20, 11, true);
+				TextBox boxCaseDescT = Core.CreateBox(p, 5, 26, 160, 70, 9, true);
+				
+				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 110, 5, 55, 20, 9, true);	// Проблемы с размерами (Высота независима)
+				
+				boxCaseTimeT.BackColor = Color.FromArgb(133, 238, 176);
+				boxCaseTimeT.MaxLength = 5;
+				boxCaseTimeT.Mask = "00:00-00:00";
 				
 				p.BackColor = Color.FromArgb(133, 238, 186);
 				
@@ -113,15 +113,22 @@ namespace Construct
 				p.MouseMove += (MouseMove_Case);
 				p.MouseDown += (MouseDown_Case);
 				p.MouseUp += (MouseUp_Case);
+				
 				labCaseNameT.MouseMove += (MouseMove_Case);
 				labCaseNameT.MouseDown += (MouseDown_Case);
 				labCaseNameT.MouseUp += (MouseUp_Case);
+				
 				labCaseTimeT.MouseMove += (MouseMove_Case);
 				labCaseTimeT.MouseDown += (MouseDown_Case);
 				labCaseTimeT.MouseUp += (MouseUp_Case);
+				
 				labCaseDescT.MouseMove += (MouseMove_Case);
 				labCaseDescT.MouseDown += (MouseDown_Case);
 				labCaseDescT.MouseUp += (MouseUp_Case);
+				
+				boxCaseNameT.MouseDown += (MouseDown_Case);
+				boxCaseTimeT.MouseDown += (MouseDown_Case);
+				boxCaseDescT.MouseDown += (MouseDown_Case);
 				
 				p.Visible = true;
 				
@@ -129,6 +136,17 @@ namespace Construct
 		
 				return p;
 			}	
+			
+			// Метод перересоввающий весь список задач
+			internal void panCaseRedraw()
+			{
+				posBot = posTop;
+				foreach (Panel pan in panCase)
+				{
+					pan.Top = posBot;
+					posBot += pan.Height + 3;
+				}
+			}
 			
 			// Прокрутка списка задач колесиком мыши
 			internal void MouseWheel_Case(object sender, MouseEventArgs e)

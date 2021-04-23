@@ -16,18 +16,20 @@ namespace Construct
 	{
 		// Панель регистрации
 		static Panel panRegMain = Core.CreatePan(0, 0, 1280, 720);
-		
+		// Панель  формы регистрации
 		static Panel panReg = Core.CreatePan(panRegMain, 400, 150, 480, 420);
+		// Название
 		Label labReg = Core.CreateLab(panReg, 5, 5, 470, 40, 16);
-		
+		// Логин и Пароль
 		Label labRegLog = Core.CreateLab(panReg, 5, 100, 165, 20, 12);
 		Label labRegPar = Core.CreateLab(panReg, 5, 200, 165, 20, 12);
-		
+		// Ввод для логина и пароля
 		TextBox boxRegLog = Core.CreateBox(panReg, 5, 125, 165, 20, 12);
 		TextBox boxRegPar = Core.CreateBox(panReg, 5, 225, 165, 20, 12);
-		
+		// Кнопка "Войти"
 		Label labRegEnter = Core.CreateLab(panReg, 355, 375, 120, 40, 12);
 		
+		// Метод для инициализаии регистрации
 		internal void InitializeReg()
 		{
 			Controls.Add(panRegMain);

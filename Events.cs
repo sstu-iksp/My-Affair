@@ -18,13 +18,12 @@ namespace Construct
 		static bool act;
 		// Переменная для запоминания активной панели
 		static Panel actP;
+		static Panel actP2;
 		// Переменная для запоминания номера начального дня
 		static int beginDay;
-		
 		// Переменные для запоминания начальных координат панели (для теста)
 		static int actX;
 		static int actY;
-		
 		// Переменные для запоминания начальных координат на панели (для теста)
 		static int startX;
 		static int startY;
@@ -33,7 +32,7 @@ namespace Construct
 		internal static void MouseDown_Case(object sender, MouseEventArgs e)
 		{
 			// Проверяем нажатие на кнопку
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left && (sender as TextBox) == null && (sender as MaskedTextBox) == null)
 			{
 				startX = e.X;
 				startY = e.Y;
@@ -43,6 +42,9 @@ namespace Construct
 				
 				// Запоминаем номер начального дня
 				beginDay = actP.Parent.TabIndex;
+				
+				// Изменяем координату последней задачи
+				days[beginDay].posBot -= actP.Height + 3;
 				
 		//		actP.Parent.Controls.Remove(actP);						// Неизвестно, нужно или нет
 				
@@ -55,6 +57,16 @@ namespace Construct
 				actP.BringToFront();
 				// Показываем что панель активна
 				act = true;
+			}
+			if (e.Button == MouseButtons.Right)
+			{
+				if ((sender as Panel) != null)		actP2 = (sender as Panel);
+				else if ((sender as Label) != null)	actP2 = (Panel)(sender as Label).Parent;
+				
+				foreach (Control ctrl in actP2.Controls)
+				{
+					if ((ctrl as TextBox) != null || (ctrl as MaskedTextBox) != null) ctrl.BringToFront();
+				}
 			}
 		}
 		
@@ -69,8 +81,10 @@ namespace Construct
 				for (int i = 0; i < 7; i++)
 				{
 					if ((actP.Left + actP.Width/2 > days[i].panDay.Left) && (actP.Left + actP.Width/2 < days[i].panDay.Left + days[i].panDay.Width)
-					   && (actP.Top + actP.Height/2 > days[i].panDay.Top) && (actP.Top + actP.Height/2 < days[i].panDay.Top + days[i].panDay.Height))
+					   && (actP.Top + actP.Height/2 > days[i].panDay.Top) && (actP.Top + actP.Height/2 < days[i].panDay.Top + days[i].panDay.Height)
+					  	&& i != beginDay)
 					{
+						/*
 						if (days[i].panCase.LastOrDefault() != null)			// ***
 						{
 							//days[i].panDay.Controls.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].panCase.LastOrDefault().Top + days[i].panCase.LastOrDefault().Height + 3));
@@ -81,13 +95,17 @@ namespace Construct
 							//days[i].panDay.Controls.Add(days[i].Copy_Case(days[i].panDay, 3, 28));
 							days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, 28));
 						}
+						*/
+						days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot));
 						// Удаляем задачу из колекции начального дня
 						days[beginDay].panCase.Remove(actP);
 						days[i].posBot += actP.Height + 3;
 						actP.Dispose();
 					//	form.Controls.Remove(actP);	// (тест или нет)
-						cancel = false;
-						days[i].labDay.Text = "fkjsdikjfl";	// ***
+						cancel = false;						
+						// Перерисовываем список задач начального дня
+						days[beginDay].panCaseRedraw();
+						
 						break;
 					}
 				}
@@ -115,8 +133,6 @@ namespace Construct
 				actP.Top = actP.Top + e.Y - startY;
 			}
 		}
-		
-		
 		
 		internal Point prevMousePos;
 		// Прокурутка дня левой кнопкой мыши (тест)

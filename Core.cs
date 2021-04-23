@@ -130,6 +130,38 @@ namespace Construct
 			pan.Controls.Add(box);			
 			return box;
 		}
+		// Текстовое поле в несколько строк (можно изменять высоту поля)
+		internal static TextBox CreateBox(Panel pan, int left, int top, int width, int height, float f, bool mult)
+		{
+			TextBox box = new TextBox();
+			
+			box.Left = left;
+			box.Top = top;
+			box.Width = width;
+			box.Height = height;
+			box.ForeColor = Color.Black;
+			box.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
+			box.Multiline = mult;
+			
+			pan.Controls.Add(box);			
+			return box;
+		}
+		// Текстовое поле, которое позваляет задать формат ввода (маску)
+		internal static MaskedTextBox CreateMasBox(Panel pan, int left, int top, int width, int height, float f, bool mult)
+		{
+			MaskedTextBox box = new MaskedTextBox();
+			
+			box.Left = left;
+			box.Top = top;
+			box.Width = width;
+			box.Height = height;
+			box.ForeColor = Color.Black;
+			box.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
+			box.Multiline = mult;
+			
+			pan.Controls.Add(box);			
+			return box;
+		}
 	}	
 }
 
