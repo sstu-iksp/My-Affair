@@ -18,6 +18,8 @@ namespace Construct
 		static bool act;
 		// Переменная для запоминания активной панели
 		static Panel actP;
+		// Переменная для запоминания номера начального дня
+		static int beginDay;
 		
 		// Переменные для запоминания начальных координат панели (для теста)
 		static int actX;
@@ -36,11 +38,16 @@ namespace Construct
 				startX = e.X;
 				startY = e.Y;
 				// Запоминаем панель и ее координаты, в условии проверяется нажатие на саму панель или ее составляющих
-				if ((sender as Panel) != null) 	actP = (sender as Panel);
+				if ((sender as Panel) != null)		actP = (sender as Panel);
 				else if ((sender as Label) != null)	actP = (Panel)(sender as Label).Parent;
 				
-				actP.Parent.Controls.Remove(actP);		// ыыы
-				form.Controls.Add(actP);				// (тест или нет)
+				// Запоминаем номер начального дня
+				beginDay = actP.Parent.TabIndex;
+				
+		//		actP.Parent.Controls.Remove(actP);						// Неизвестно, нужно или нет
+				
+				// Добавляем задачу на форму, для возможности перемещения вне начального дня
+				form.Controls.Add(actP);
 				
 				actX = actP.Left;
 				actY = actP.Top;
@@ -54,6 +61,8 @@ namespace Construct
 		// Событие срабатывающие во время отпускания кнопки, отвечает за конечное расположение панели
 		internal static void MouseUp_Case(object sender, MouseEventArgs e)
 		{
+			bool cancel = true;
+			
 			if (e.Button == MouseButtons.Left)
 			{
 				// После отпускания кнопки мыши проверяем местоположение панели относительно дней
@@ -64,20 +73,35 @@ namespace Construct
 					{
 						if (days[i].panCase.LastOrDefault() != null)			// ***
 						{
-							days[i].panDay.Controls.Add(Copy_Case(days[i].panDay, 3, days[i].panCase.LastOrDefault().Top + days[i].panCase.LastOrDefault().Height + 3));
+							//days[i].panDay.Controls.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].panCase.LastOrDefault().Top + days[i].panCase.LastOrDefault().Height + 3));
+							days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].panCase.LastOrDefault().Top + days[i].panCase.LastOrDefault().Height + 3));
 						}
 						else
 						{
-							days[i].panDay.Controls.Add(Copy_Case(days[i].panDay, 3, 28));
+							//days[i].panDay.Controls.Add(days[i].Copy_Case(days[i].panDay, 3, 28));
+							days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, 28));
 						}
-						
-						form.Controls.Remove(actP);	// (тест или нет)
-						
+						// Удаляем задачу из колекции начального дня
+						days[beginDay].panCase.Remove(actP);
+						days[i].posBot += actP.Height + 3;
+						actP.Dispose();
+					//	form.Controls.Remove(actP);	// (тест или нет)
+						cancel = false;
+						days[i].labDay.Text = "fkjsdikjfl";	// ***
 						break;
 					}
 				}
-				actP.Left = actX;
-				actP.Top = actY;
+				// Возвращаем задачу задачу обратно на начальный день если она не была перемещена
+				if(cancel)
+				{
+					form.Controls.Remove(actP);
+					days[beginDay].panDay.Controls.Add(actP);
+					
+					actP.Left = actX;
+					actP.Top = actY;
+					//actP.Dispose();	// че
+				}
+		//		actP.Dispose();
 				act = false;
 			}
 		}
@@ -91,6 +115,8 @@ namespace Construct
 				actP.Top = actP.Top + e.Y - startY;
 			}
 		}
+		
+		
 		
 		internal Point prevMousePos;
 		// Прокурутка дня левой кнопкой мыши (тест)
@@ -108,7 +134,7 @@ namespace Construct
 	//				ctrl.Location = new Point(ctrl.Location.X, ctrl.Location.Y + d.Y);
                 
                 for(int i = 2; i < (sender as Panel).Controls.Count; i++)
-                	(sender as Panel).Controls[i].Location = new Point((sender as Panel).Controls[i].Location.X, (sender as Panel).Controls[i].Location.Y + d.Y);
+                	(sender as Panel).Controls[i].Location = new Point((sender as Panel).Controls[i].Location.X + d.X, (sender as Panel).Controls[i].Location.Y + d.Y);
             }            
         }
 		

@@ -19,14 +19,14 @@ namespace Construct
 		string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 		
 		// Метод отображающий дни недели на экран, (заменен)
-		internal void InitializeWeek()
+		internal void InitializeW()
 		{
-			panMidPanel.Visible = true;
-			Controls.Add(panMidPanel);
+			panWeekMain.Visible = true;
+			Controls.Add(panWeekMain);
 			
 			for(int i = 0; i < 7; i++)
 			{
-				weekday.Add(Core.CreatePan(panMidPanel, 15 + i * 180, 100, 175, 400));
+				weekday.Add(Core.CreatePan(panWeekMain, 15 + i * 180, 100, 175, 400));
 				weekdayName.Add(Core.CreateLab(weekday[i], 5, 5, 165, 20, 12));
 				
 				weekday[i].BackColor = Color.FromArgb(129, 212, 238);
@@ -42,7 +42,7 @@ namespace Construct
 		
 		
 		
-		static Panel panCasePanel = Core.CreatePan(panMidPanel, 1100, 590, 170, 100);
+		static Panel panCasePanel = Core.CreatePan(panWeekMain, 1100, 590, 170, 100);
 		Label labCaseName = Core.CreateLab(panCasePanel, 5, 5, 105, 20, 11);
 		Label labCaseTime = Core.CreateLab(panCasePanel, 110, 5, 55, 20, 11);
 		Label labCaseDesc = Core.CreateLab(panCasePanel, 5, 26, 160, 70, 9);
@@ -80,6 +80,33 @@ namespace Construct
 			labCaseTime.MouseUp += (MouseUp_Case);
 			labCaseDesc.MouseUp += (MouseUp_Case);
 		}
+		
+		// Кнопка "Выйти"
+		Label labExit = Core.CreateLab(panWeekMain, 1200, 5, 70, 20, 10);
+		
+		// Отображение различных кнопок
+		internal void InitializeButtons()
+		{
+			labExit.BackColor = Color.FromArgb(129, 202, 228);
+			labExit.Text = "Выйти";
+			labExit.MouseClick += (MouseClick_labExit);
+			labExit.MouseEnter += (MouseEnter_labExit);
+			labExit.MouseLeave += (MouseLeave_labExit);
+		}
+		
+		// Событие нажатия на кнопку "Выйти"
+		internal void MouseClick_labExit(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				panRegMain.Visible = true;
+				panWeekMain.Visible = false;
+			}
+		}
+		
+		// Событие наведения на кнопку "Выйти"
+		internal void MouseEnter_labExit(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 208); }
+		internal void MouseLeave_labExit(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 202, 228); }
 	}
 }
 

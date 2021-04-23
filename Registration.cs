@@ -14,9 +14,10 @@ namespace Construct
 	
 	partial class MainForm
 	{
-		static Panel panRegPanel = Core.CreatePan(0, 0, 1280, 720);
+		// Панель регистрации
+		static Panel panRegMain = Core.CreatePan(0, 0, 1280, 720);
 		
-		static Panel panReg = Core.CreatePan(panRegPanel, 400, 150, 480, 420);
+		static Panel panReg = Core.CreatePan(panRegMain, 400, 150, 480, 420);
 		Label labReg = Core.CreateLab(panReg, 5, 5, 470, 40, 16);
 		
 		Label labRegLog = Core.CreateLab(panReg, 5, 100, 165, 20, 12);
@@ -29,10 +30,10 @@ namespace Construct
 		
 		internal void InitializeReg()
 		{
-			Controls.Add(panRegPanel);
+			Controls.Add(panRegMain);
 			
-			panRegPanel.Visible = true;
-			panMidPanel.Visible = false;
+			panRegMain.Visible = true;
+			panWeekMain.Visible = false;
 							
 			panReg.BackColor = Color.FromArgb(129, 212, 238);
 			panReg.Visible = true;
@@ -58,8 +59,8 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				panMidPanel.Visible = true;
-				panRegPanel.Visible = false;
+				panWeekMain.Visible = true;
+				panRegMain.Visible = false;
 			}
 		}
 		
