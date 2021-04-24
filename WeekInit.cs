@@ -111,6 +111,9 @@ namespace Construct
 				labCaseNameT.BackColor = Color.FromArgb(133, 248, 186);
 				labCaseTimeT.BackColor = Color.FromArgb(133, 238, 176);
 				labCaseDescT.BackColor = Color.FromArgb(133, 228, 166);
+				boxCaseNameT.ForeColor = Color.White;
+				boxCaseTimeT.ForeColor = Color.White;
+				boxCaseDescT.ForeColor = Color.White;
 				
 				labCaseNameT.TextAlign = ContentAlignment.MiddleLeft;
 				labCaseTimeT.TextAlign = ContentAlignment.MiddleRight;
@@ -119,6 +122,9 @@ namespace Construct
 				labCaseNameT.Text = name;
 				labCaseTimeT.Text = time;
 				labCaseDescT.Text = desc;
+				boxCaseNameT.Text = name;
+				boxCaseTimeT.Text = time;
+				boxCaseDescT.Text = desc;
 				
 				// Присваиваем события для панели и ее составляющих
 				p.MouseMove += (MouseMove_Case);

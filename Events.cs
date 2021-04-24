@@ -61,16 +61,17 @@ namespace Construct
 			}
 			if (e.Button == MouseButtons.Right && !compl)
 			{
+				// Определяем панельку
 				if ((sender as Panel) != null)		actP2 = (sender as Panel);
 				else if ((sender as Label) != null)	actP2 = (Panel)(sender as Label).Parent;
-				
+				// Меняем местами Текстбоксы с Лейблами
 				foreach (Control ctrl in actP2.Controls)
-				{
-					if ((ctrl as TextBox) != null || (ctrl as MaskedTextBox) != null) ctrl.BringToFront();
-				}
+					if ((ctrl as TextBox) != null || (ctrl as MaskedTextBox) != null)
+						ctrl.BringToFront();
+				// Запоминаем индексы панелей дня и задачи для дальнейшей возможности к ним обратиться
 				beginDay = actP2.Parent.TabIndex;
 				beginCase = days[beginDay].panCase.IndexOf(actP2);
-				
+				// Объявляем о том, что происходит редактирование задачи
 				compl = true;
 			}
 		}
@@ -120,6 +121,14 @@ namespace Construct
 						
 						break;
 					}
+					else if((actP.Top + actP.Height/2 < days[i].panDay.Top))	// 'Пуф'
+					{
+						form.Controls.Remove(actP);
+						days[beginDay].panCase.Remove(actP);
+						days[beginDay].posBot -= actP.Height + 3;
+						cancel = false;
+						days[beginDay].panCaseRedraw();
+					}
 				}
 				// Возвращаем задачу задачу обратно на начальный день если она не была перемещена
 				if(cancel)
@@ -149,43 +158,28 @@ namespace Construct
 		// Метод для закрытия режима редактирования задачи
 		internal static void MouseClick_Outside(object sender, MouseEventArgs e)
 		{
+			// Переменные для записи значений
 			string name = "";
 			string time = "";
 			string desc = "";
 			
 			if (e.Button == MouseButtons.Left && compl)
 			{
+				// Сначала считываем то, что записанно в Текстбоксах путем перебора всех контролов на панели
 				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
 				{
-					if (ctrl.TabIndex == 3)
-					{
-						name = ctrl.Text;
-					}
-					else if (ctrl.TabIndex == 4)
-					{
-						time = ctrl.Text;
-					}
-					else if (ctrl.TabIndex == 5)
-					{
-						desc = ctrl.Text;
-					}
+					if (ctrl.TabIndex == 3)			name = ctrl.Text;
+					else if (ctrl.TabIndex == 4)	time = ctrl.Text;
+					else if (ctrl.TabIndex == 5)	desc = ctrl.Text;
 				}
+				// После переписываем считанные данные в Лейблы, также путем перебора всех контролов (не круто, но работает)
 				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
 				{
-					if (ctrl.TabIndex == 0)
-					{
-						ctrl.Text = name;
-					}
-					else if (ctrl.TabIndex == 1)
-					{
-						ctrl.Text = time;
-					}
-					else if (ctrl.TabIndex == 2)
-					{
-						ctrl.Text = desc;
-					}
-					
+					if (ctrl.TabIndex == 0)			ctrl.Text = name;
+					else if (ctrl.TabIndex == 1)	ctrl.Text = time;
+					else if (ctrl.TabIndex == 2)	ctrl.Text = desc;
 				}
+				// Далее меняем местами Лейблы с Текстбоксами
 				foreach (Control ctrl in actP2.Controls)
 					if ((ctrl as Label) != null) ctrl.BringToFront();
 				compl = false;

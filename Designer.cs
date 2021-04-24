@@ -59,9 +59,9 @@ namespace Construct
 		{
 			//***																														// ТЕСТ
 			year.listMonth[2].listDay[24].cases.Add(new Сalendar.Case("Тест", "11:11", "Да да я"));
-			year.listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Позавтракать", "9:00", "Чтобы вырасти, нужно хорошо питаться"));
+			year.listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Позавтракать", "09:00", "Чтобы вырасти, нужно хорошо питаться"));
 			year.listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Поужинать", "12:00", "Чтобы вырасти, нужно хорошо питаться x2"));
-			year.listMonth[3].listDay[25].cases.Add(new Сalendar.Case("Пара", "9:45-11:15", "Пара по 1С"));
+			year.listMonth[3].listDay[25].cases.Add(new Сalendar.Case("Пара", "09:45-11:15", "Пара по 1С"));
 			year.listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите"));
 			//***
 			
