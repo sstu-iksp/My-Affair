@@ -33,6 +33,8 @@ namespace Construct
 		internal void InitializeReg()
 		{
 			Controls.Add(panRegMain);
+			// Цвет панельки регистрации
+			panRegMain.BackColor = Color.FromArgb(255, 216, 177);
 			
 			panRegMain.Visible = true;
 			panWeekMain.Visible = false;

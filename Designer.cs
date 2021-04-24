@@ -18,10 +18,10 @@ namespace Construct
 		static Panel panWeekMain = Core.CreatePan(0, 0, 1280, 720);
 		// Текущий год
 		static Сalendar.Year year = new Сalendar.Year(Convert.ToInt32(DateTime.Now.ToString("yyyy")));
-		
 		// Инициализация всех компонентов
 		internal void InitializeComponent()
 		{
+			// Всякие настройки
 			AutoScaleDimensions = new SizeF(8F, 16F);
 			AutoScaleMode = AutoScaleMode.Font;
 			// Делает границу фиксированной
@@ -32,18 +32,19 @@ namespace Construct
 			form = Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
 			// Включаем возможность отслеживания нажатия клавиш
 			form.KeyPreview = true;
-			
+			// Цвет формы (скрыта)
+			form.BackColor = Color.FromArgb(255, 216, 177);
+			// Цвет панельки недели
+			panWeekMain.BackColor = Color.FromArgb(255, 216, 177);
 			// Отображаем главную панель
 			panWeekMain.Visible = true;
 			Controls.Add(panWeekMain);
-			
 			// Вывод дней недели
 			InitializeWeek();
-			
+			// Вывод регистрации/авторизации
 			InitializeReg();
-			InitializeButtons();
-			
-			panWeekMain.MouseMove += (MouseMove_pmp);	// Зачем?
+			// Ввод различных элементов
+			InitializeElements();
 			
 			panWeekMain.MouseClick += (MouseClick_Outside);	// Для заполнения задачи
 		}
@@ -53,7 +54,8 @@ namespace Construct
 		// Просто массив с днями недели
 		internal string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 		Dictionary<string, int> dayWeek = new Dictionary<string, int>();
-		
+		// Пустаяя панелька
+		static internal Label labVoid;
 		// Метод создающий дни недели, которые отображаются на экран, размер панельки дня 175x400 px
 		internal void InitializeWeek()
 		{
@@ -72,7 +74,7 @@ namespace Construct
 			
 			for(int i = 0; i < 7; i++)
 			{
-				days.Add(new Day(wn[i] + " - " + (DateTime.Now.Day - dayBegin + i), Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 400)));	// Переход с месяцем !!!
+				days.Add(new Day(wn[i] + " - " + (DateTime.Now.Day - dayBegin + i), Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 600)));	// Переход с месяцем !!!
 				days[i].panDay.TabIndex = i;
 				// События привязанные к панели дня
 	//			days[i].panDay.MouseMove += (MouseMove_pmp);	// Прокрутка задач дня левой кнопкой мыши	***
@@ -92,6 +94,10 @@ namespace Construct
 					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
 				}
 			}
+			// Пустаяя панелька
+			labVoid = Core.CreateLab(days[0].panDay, 3, 28, 170, 30, 11);
+			labVoid.BackColor = Color.FromArgb(201, 201, 201);
+			labVoid.Visible = false;
 		}
 		
 		

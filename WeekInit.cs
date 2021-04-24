@@ -18,7 +18,7 @@ namespace Construct
 			// Координаты для прокрутки задач
 			internal int posTop = 28;
 			internal int posBot = 28;
-			
+			internal int posLab = 28;
 			// Панелька дня
 			internal Panel panDay;
 			// Название дня
@@ -31,40 +31,35 @@ namespace Construct
 			internal Day(string name, Panel pan)
 			{
 				panDay = pan;
-				
 				// Начальная настройка панели и надписи
 				panDay.BackColor = Color.FromArgb(129, 212, 238);
 				panDay.Visible = true;
-				
+				// Название дня
 				labDay = Core.CreateLab(this.panDay, 5, 5, 165, 20, 12);
 				labDay.BackColor = Color.FromArgb(129, 222, 238);
 				labDay.Text = name;
-				
+				// Кнопка добавить
 				labAddCase = Core.CreateLab(this.panDay, 5, panDay.Height - 32, panDay.Width - 10, 27, 18);
 				labAddCase.BackColor = Color.FromArgb(129, 212, 228);
 				labAddCase.Text = "+";
 				labAddCase.TextAlign = ContentAlignment.MiddleCenter;
-				
 				// Нажатие на кнопку "Добавить"
 				labAddCase.MouseClick += (MouseClick_labAddCase);
 				// Прокрутка задач колесиком мыши
 				panDay.MouseWheel += (MouseWheel_Case);
 			}
-			
 			// Метод добавляющий новую задачу
 			internal void caseAdd(Panel pan)
 			{
 				panCase.Add(pan);
 				posBot += pan.Height + 3;
 			}
-			
 			// Метод удаляющий задачу
 			internal void caseRemove(Panel pan)
 			{
 				panCase.Remove(pan);
 				posBot -= pan.Height + 3;
 			}
-			
 			// Событие нажатия на кнопку "Добавить (+)"
 			internal void MouseClick_labAddCase(object sender, MouseEventArgs e)
 			{
@@ -73,9 +68,11 @@ namespace Construct
 					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
 					caseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
 					year.listMonth[0].listDay[0].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));
+					// ***
+					labAddCase.Text = panCase.Count() + " ";				// -------------------------------------------------- DEBAG
+					// ***
 				}
 			}
-			
 			// Временный метод позволяющий копировать задачу, а точнее создать пустую
 			internal Panel Copy_Case(Panel pan, int x, int y, string name, string time, string desc)
 			{
@@ -157,25 +154,24 @@ namespace Construct
 		//		panCase.Add(p);
 		
 				return p;
-			}	
-			
+			}
 			// Метод перерисовывающий весь список задач
 			internal void panCaseRedraw()
 			{
 				posBot = posTop;
 				foreach (Panel pan in panCase)
 				{
+					if (posBot == posLab)					// ***
+						posBot += labVoid.Height + 3;
 					pan.Top = posBot;
 					posBot += pan.Height + 3;
 				}
 			}
-			
 			// Метод переписывающий задачу
 			internal void panCaseRewrite()
 			{
 				
 			}
-			
 			// Прокрутка списка задач колесиком мыши
 			internal void MouseWheel_Case(object sender, MouseEventArgs e)
 			{
@@ -207,7 +203,7 @@ namespace Construct
 					posBot = panCase.LastOrDefault().Top + panCase.LastOrDefault().Height + 3;
 				}
 				// ***
-				labAddCase.Text = panCase.Count() + " " + panDay.TabIndex + " ";		// ------------------------------- DEBAG
+				labAddCase.Text = panCase.Count() + " ";		// ------------------------------- DEBAG
 				// ***
 			}
 			
