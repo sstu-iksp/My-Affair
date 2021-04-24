@@ -36,7 +36,7 @@ namespace Construct
 		internal static void MouseDown_Case(object sender, MouseEventArgs e)
 		{
 			// Проверяем нажатие на кнопку
-			if (e.Button == MouseButtons.Left && (sender as TextBox) == null && (sender as MaskedTextBox) == null)
+			if (e.Button == MouseButtons.Left && (sender as TextBox) == null && (sender as MaskedTextBox) == null && !compl)
 			{
 				startX = e.X;
 				startY = e.Y;
@@ -46,9 +46,6 @@ namespace Construct
 				
 				// Запоминаем номер начального дня
 				beginDay = actP.Parent.TabIndex;
-				
-				// Изменяем координату последней задачи
-				days[beginDay].posBot -= actP.Height + 3;
 				
 		//		actP.Parent.Controls.Remove(actP);						// Неизвестно, нужно или нет
 				
@@ -83,7 +80,7 @@ namespace Construct
 		{
 			bool cancel = true;
 			
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left && act)
 			{
 				// После отпускания кнопки мыши проверяем местоположение панели относительно дней
 				for (int i = 0; i < 7; i++)
@@ -113,6 +110,8 @@ namespace Construct
 						// Удаляем задачу из колекции начального дня
 						days[beginDay].panCase.Remove(actP);
 						days[i].posBot += actP.Height + 3;
+						// Изменяем координату последней задачи
+						days[beginDay].posBot -= actP.Height + 3;
 				//		actP.Dispose();																// ---
 					//	form.Controls.Remove(actP);	// (тест или нет)
 						cancel = false;						
@@ -192,7 +191,6 @@ namespace Construct
 				compl = false;
 			}
 		}
-		
 		
 		internal Point prevMousePos;
 		// Прокурутка дня левой кнопкой мыши (тест)

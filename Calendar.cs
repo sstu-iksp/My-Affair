@@ -13,7 +13,7 @@ namespace Construct
 	// Костя, напиши комменты
 	
 	public static class Сalendar
-	{		
+	{
 		internal class Year
 		{
 			internal int yearInt;
@@ -22,7 +22,7 @@ namespace Construct
 			internal Year(int year)
 			{
 				yearInt = year;
-				for(int i=0; i<12; i++)
+				for(int i = 1; i <= 12; i++)
 					listMonth.Add(new Month(i, yearInt));
 			}
 			
@@ -37,7 +37,7 @@ namespace Construct
 			{
 				monthInt = number;
 				
-				for(int i=0; i<DateTime.DaysInMonth(year, monthInt); i++)
+				for(int i = 0; i < DateTime.DaysInMonth(year, monthInt); i++)
 					listDay.Add(new Day(i));
 			}
 			
@@ -46,7 +46,7 @@ namespace Construct
 		internal class Day 
 		{
 			internal int dayInt;			
-			internal List<Case> panCase = new List<Case>();
+			internal List<Case> cases = new List<Case>();
 			
 			internal Day(int day)
 			{
@@ -58,21 +58,19 @@ namespace Construct
 		internal class Case 
 		{
 			internal string nameCase;
-			internal string description;
 			internal string lastTime;
-			internal string firstTime;
+			//internal string firstTime;
+			internal string description;
 			
-			internal Case(string nameCase, string description, string lastTime, string firstTime)
+			internal Case(string nameCase, string lastTime, string description)
 			{
 				this.nameCase = nameCase;
-				this.description  = description;
 				this.lastTime = lastTime;
-				this.firstTime = firstTime;
+				this.description  = description;
+				//this.firstTime = firstTime;
 			}
 			
 		}
-		
-		
 		
 	}
 }

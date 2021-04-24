@@ -70,12 +70,14 @@ namespace Construct
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					caseAdd(Copy_Case(panDay, 3, posBot));			//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения					
+					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
+					caseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
+					year.listMonth[0].listDay[0].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));
 				}
 			}
 			
 			// Временный метод позволяющий копировать задачу, а точнее создать пустую
-			internal Panel Copy_Case(Panel pan, int x, int y)
+			internal Panel Copy_Case(Panel pan, int x, int y, string name, string time, string desc)
 			{
 		//		panCase.Add(Core.CreatePan(pan, x, y, 170, 100));
 				
@@ -114,9 +116,9 @@ namespace Construct
 				labCaseTimeT.TextAlign = ContentAlignment.MiddleRight;
 				labCaseDescT.TextAlign = ContentAlignment.TopLeft;
 				
-				labCaseNameT.Text = "Name";
-				labCaseTimeT.Text = "Time";
-				labCaseDescT.Text = "Description\nyep";
+				labCaseNameT.Text = name;
+				labCaseTimeT.Text = time;
+				labCaseDescT.Text = desc;
 				
 				// Присваиваем события для панели и ее составляющих
 				p.MouseMove += (MouseMove_Case);
@@ -199,7 +201,7 @@ namespace Construct
 					posBot = panCase.LastOrDefault().Top + panCase.LastOrDefault().Height + 3;
 				}
 				// ***
-				labAddCase.Text = panCase.Count() + " " + panDay.TabIndex;							// ------------------------------- DEBAG
+				labAddCase.Text = panCase.Count() + " " + panDay.TabIndex + " ";		// ------------------------------- DEBAG
 				// ***
 			}
 			
