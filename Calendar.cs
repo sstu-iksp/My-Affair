@@ -10,47 +10,68 @@ using System.Runtime.InteropServices;
 
 namespace Construct
 {
+	// Костя, напиши комменты
+	
 	public static class Сalendar
 	{
-		// Класс имеет 00 поля и 00 метода, он нужен для создания дней, которые будут отображаться на экране просмотра недели
-		// поля состоят из названия, кол-ва задач привязанных ко дню, панель дня, надпись названия, коллекция панелиц задач
-		// методы позовляют добавить новую задачу и удалить задачу
-		internal class Day														// 		*В РАЗРАБОТКЕ*
+		internal class Year
 		{
-			internal string name;
-			internal int panQ;
-			internal Panel panDay;
-			internal Label labDay;
-			internal List<Panel> panCase = new List<Panel>();
+			internal int yearInt;
+			internal List<Month> listMonth = new List<Month>();
 			
-			internal Day(string name, Panel panDay)
+			internal Year(int year)
 			{
-				this.name = name;
-				this.panDay = panDay;
-				
-				// Начальная настройка панели и надписи
-				panDay.BackColor = Color.FromArgb(129, 212, 238);
-				panDay.Visible = true;
-				labDay = Core.CreateLab(this.panDay, 5, 5, 165, 20, 12);
-				labDay.BackColor = Color.FromArgb(129, 222, 238);
-				labDay.Text = this.name;
-				labDay.Visible = true;
+				yearInt = year;
+				for(int i = 1; i <= 12; i++)
+					listMonth.Add(new Month(i, yearInt));
 			}
 			
-			// Метод добавляющий новую задачу
-			internal void caseAdd(Panel pan)
-			{
-				panCase.Add(pan);
-				panQ++;
-			}
-			
-			// Метод удаляющий задачу
-			internal void caseRemove(Panel pan)
-			{
-				panCase.Remove(pan);
-				panQ--;
-			}
 		}
+		
+		internal class Month
+		{			
+			internal int monthInt;	
+			internal List<Day> listDay = new List<Day>();
+			
+			internal Month(int number, int year)
+			{
+				monthInt = number;
+				
+				for(int i = 0; i < DateTime.DaysInMonth(year, monthInt); i++)
+					listDay.Add(new Day(i));
+			}
+			
+		}
+		
+		internal class Day 
+		{
+			internal int dayInt;			
+			internal List<Case> cases = new List<Case>();
+			
+			internal Day(int day)
+			{
+				this.dayInt = day;
+			}
+			
+		}
+		
+		internal class Case 
+		{
+			internal string nameCase;
+			internal string lastTime;
+			//internal string firstTime;
+			internal string description;
+			
+			internal Case(string nameCase, string lastTime, string description)
+			{
+				this.nameCase = nameCase;
+				this.lastTime = lastTime;
+				this.description  = description;
+				//this.firstTime = firstTime;
+			}
+			
+		}
+		
 	}
 }
 

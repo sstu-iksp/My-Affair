@@ -12,187 +12,94 @@ namespace Construct
 {
 	partial class MainForm
 	{
-		// Главная панель
-		static Panel panMidPanel = Core.CreatePan(0, 0, 1280, 720);
-		
+		// Главная и единственная форма
+		static Form form;
+		// Панель недели
+		static Panel panWeekMain = Core.CreatePan(0, 0, 1280, 720);
+		// Текущий год
+		static Сalendar.Year year = new Сalendar.Year(Convert.ToInt32(DateTime.Now.ToString("yyyy")));
+		// Инициализация всех компонентов
 		internal void InitializeComponent()
 		{
+			// Всякие настройки
 			AutoScaleDimensions = new SizeF(8F, 16F);
 			AutoScaleMode = AutoScaleMode.Font;
 			// Делает границу фиксированной
 			FormBorderStyle = FormBorderStyle.FixedSingle;
 			// Блокировка полноэкранного режима
 			MaximizeBox = false;
-			// Метод создающий окно
-			Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
-			
+			// Создаем основную форму
+			form = Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
+			// Включаем возможность отслеживания нажатия клавиш
+			form.KeyPreview = true;
+			// Цвет формы (скрыта)
+			form.BackColor = Color.FromArgb(255, 216, 177);
+			// Цвет панельки недели
+			panWeekMain.BackColor = Color.FromArgb(255, 216, 177);
 			// Отображаем главную панель
-			panMidPanel.Visible = true;
-			Controls.Add(panMidPanel);
-			
+			panWeekMain.Visible = true;
+			Controls.Add(panWeekMain);
 			// Вывод дней недели
-			InitializeW();
-			// Вывод тестовой задачи
-			InitializeCase();
+			InitializeWeek();
+			// Вывод регистрации/авторизации
+			InitializeReg();
+			// Ввод различных элементов
+			InitializeElements();
 			
-			// Вывод дней недели
-	//		InitializeWeek();	// (тест)
+			panWeekMain.MouseClick += (MouseClick_Outside);	// Для заполнения задачи
 		}
 		
-		internal List<Сalendar.Day> days = new List<Сalendar.Day>();
-		
-		// Метод создающий дни недели, которые отображаются на экран, размер дня 175x400 px
-		internal void InitializeW()
+		// Коллекция для хранения дней недели
+		static internal List<Day> days = new List<Day>();
+		// Просто массив с днями недели
+		internal string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+		Dictionary<string, int> dayWeek = new Dictionary<string, int>();
+		// Пустаяя панелька
+		static internal Label labVoid;
+		// Метод создающий дни недели, которые отображаются на экран, размер панельки дня 175x400 px
+		internal void InitializeWeek()
 		{
+			//***																														// ТЕСТ
+			year.listMonth[2].listDay[24].cases.Add(new Сalendar.Case("Тест", "11:11", "Да да я"));
+			year.listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Позавтракать", "09:00", "Чтобы вырасти, нужно хорошо питаться"));
+			year.listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Поужинать", "12:00", "Чтобы вырасти, нужно хорошо питаться x2"));
+			year.listMonth[3].listDay[25].cases.Add(new Сalendar.Case("Пара", "09:45-11:15", "Пара по 1С"));
+			year.listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите"));
+			//***
+			
+			// Определяем день недели
+			for(int i = 0; i < 7; i++)
+				dayWeek.Add(wn[i], i);
+			int dayBegin = dayWeek[DateTime.Now.DayOfWeek.ToString()];
+			
 			for(int i = 0; i < 7; i++)
 			{
-				days.Add(new Сalendar.Day("Monday", Core.CreatePan(panMidPanel, 15 + i * 180, 100, 175, 400)));
+				days.Add(new Day(wn[i] + " - " + (DateTime.Now.Day - dayBegin + i), Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 600)));	// Переход с месяцем !!!
+				days[i].panDay.TabIndex = i;
 				
-				// События привязанные к панели дня
-				days[i].panDay.MouseMove += (MouseMove_pmp);	// Прокрутка задач дня левой кнопкой мыши
-				days[i].panDay.MouseWheel += (MouseWheel_pmp);	// Прокрутка задач дня колесиком мыши
-			}
-		}
-		
-		
-		
-		// Переменная для проверки активности панели
-		bool act;
-		// Переменная для запоминания активной панели
-		Panel actP;
-		
-		// Переменные для запоминания начальных координат панели (для теста)
-		int actX;
-		int actY;
-		
-		// Переменные для запоминания начальных координат на панели (для теста)
-		int startX;
-		int startY;
-		
-		// Событие зажатия кнопки мыши на панели, отвечает за присвоение к активной панели, которая используется далее
-		internal void MouseDown_Case(object sender, MouseEventArgs e)
-		{
-			// Проверяем нажатие на кнопку
-			if (e.Button == MouseButtons.Left)
-			{
-				startX = e.X;
-				startY = e.Y;
-				// Запоминаем панель и ее координаты, в условии проверяется нажатие на саму панель или ее составляющих
-				if ((sender as Panel) != null) 	actP = (sender as Panel);
-				else if ((sender as Label) != null)	actP = (Panel)(sender as Label).Parent;
+				days[i].labAddCase.MouseEnter += (MouseEnter_labAddCase);	// Наведение			***
+				days[i].labAddCase.MouseLeave += (MouseLeave_labAddCase);	// Наведение			***
 				
-				actX = actP.Left;
-				actY = actP.Top;
-				// Переносим на передний план
-				actP.BringToFront();
-				// Показываем что панель активна
-				act = true;
-			}
-		}
-		
-		// Событие срабатывающие во время отпускания кнопки, отвечает за конечное расположение панели
-		internal void MouseUp_Case(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				// После отпускания кнопки мыши проверяем местоположение панели относительно дней
-				for (int i = 0; i < 7; i++)
+				days[i].panDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
+				days[i].labDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
+				days[i].labAddCase.MouseClick += (MouseClick_Outside);		// Для заполнения задачи	#
+				
+				// Заполняем дни недели на экране задачами из классов
+				foreach(Сalendar.Case cs in year.listMonth[DateTime.Now.Month - 1].listDay[DateTime.Now.Day - dayBegin + i + 1].cases)	// С месяцем проблеммы тоже !!!
 				{
-					if ((actP.Left + actP.Width/2 > days[i].panDay.Left) && (actP.Left + actP.Width/2 < days[i].panDay.Left + days[i].panDay.Width)
-					   && (actP.Top + actP.Height/2 > days[i].panDay.Top) && (actP.Top + actP.Height/2 < days[i].panDay.Top + days[i].panDay.Height))
-					{
-						days[i].panDay.Controls.Add(Copy_Case(days[i].panDay, 3, 28 + (days[i].panDay.Controls.Count - 1) * 105));
-						
-						break;
-					}
+					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description));
+					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
 				}
-				actP.Left = actX;
-				actP.Top = actY;
-				act = false;
 			}
-		}
-		
-		// Событие перетаскивания панели в котором происходит изменение координат относительно движения курсора
-		internal void MouseMove_Case(object sender, MouseEventArgs e)
-		{
-			if (act)
-			{
-				actP.Left = actP.Left + e.X - startX;
-				actP.Top = actP.Top + e.Y - startY;
-			}
-		}
-		
-		int panNum;
-		List<Panel> panCase = new List<Panel>();
-		
-		internal Panel Copy_Case(Panel pan, int x, int y)
-		{
-			//weekday
-			panCase.Add(Core.CreatePan(pan, x, y, 170, 100));
-			Label labCaseNameT = Core.CreateLab(panCase[panNum], 5, 5, 105, 20, 11);
-			Label labCaseTimeT = Core.CreateLab(panCase[panNum], 110, 5, 55, 20, 11);
-			Label labCaseDescT = Core.CreateLab(panCase[panNum], 5, 26, 160, 70, 9);
-			PictureBox pbTest = Core.CreatePB(panCase[panNum], 1, 1, 1, 1);
-			
-			panCase[panNum].BackColor = Color.FromArgb(133, 238, 186);
-			
-			labCaseNameT.BackColor = Color.FromArgb(133, 248, 186);
-			labCaseTimeT.BackColor = Color.FromArgb(133, 238, 176);
-			labCaseDescT.BackColor = Color.FromArgb(133, 228, 166);
-			
-			labCaseNameT.TextAlign = ContentAlignment.MiddleLeft;
-			labCaseTimeT.TextAlign = ContentAlignment.MiddleRight;
-			labCaseDescT.TextAlign = ContentAlignment.TopLeft;
-			
-			labCaseNameT.Text = "Name";
-			labCaseTimeT.Text = "Time";
-			labCaseDescT.Text = "Description\nyep";
-			
-			panCase[panNum].Visible = true;
-			
-			// Присваиваем события для панели и ее составляющих
-			panCase[panNum].MouseMove += (MouseMove_Case);
-			labCaseNameT.MouseMove += (MouseMove_Case);
-			labCaseTimeT.MouseMove += (MouseMove_Case);
-			labCaseDescT.MouseMove += (MouseMove_Case);
-			panCase[panNum].MouseMove += (MouseDown_Case);
-			labCaseNameT.MouseDown += (MouseDown_Case);
-			labCaseTimeT.MouseDown += (MouseDown_Case);
-			labCaseDescT.MouseDown += (MouseDown_Case);
-			panCase[panNum].MouseUp += (MouseUp_Case);
-			labCaseNameT.MouseUp += (MouseUp_Case);
-			labCaseTimeT.MouseUp += (MouseUp_Case);
-			labCaseDescT.MouseUp += (MouseUp_Case);
-			
-			return panCase[panNum++];
+			// Пустой лейбл
+			labVoid = Core.CreateLab(days[0].panDay, 3, 28, 170, 30, 10);
+			labVoid.BackColor = Color.FromArgb(201, 201, 201);
+			labVoid.Visible = false;
 		}
 		
 		
-		internal Point prevMousePos;
- 		
-		// Прокурутка дня левой кнопкой мыши (тест)
-        internal void MouseMove_pmp(object sender, MouseEventArgs e)
-        {
-        	// Записываем в переменную координаты 
-            var d = new Point(e.X - prevMousePos.X, e.Y - prevMousePos.Y);
-            // Записываем в переменную текущее положение курсора
-            prevMousePos = e.Location;
-            //if((sender as Panel) != null) 	actP = (sender as Panel);
-            if (e.Button == MouseButtons.Left)
-            {
-            	// Меняем положение всех контролов на панели относительно курсора
-                foreach (Control ctrl in (sender as Panel).Controls)
-                    ctrl.Location = new Point(ctrl.Location.X, ctrl.Location.Y + d.Y);
-            }            
-        }
-        
-        // Прокрутка дня колесиком мыши
-		internal void MouseWheel_pmp(object sender, MouseEventArgs e)
-		{
-			// '20' - скорость прокрутки, чем больше значение тем медленнее
-			foreach (Control ctrl in (sender as Panel).Controls)
-            		ctrl.Location = new Point(ctrl.Location.X, ctrl.Location.Y - e.Delta / 20);
-		}
+		
+
 	}
 }
 
