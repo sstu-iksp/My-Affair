@@ -81,6 +81,7 @@ namespace Construct
 		internal static void MouseUp_Case(object sender, MouseEventArgs e)
 		{
 			bool cancel = true;
+			bool b = true;
 			
 			if (e.Button == MouseButtons.Left && act)
 			{
@@ -93,11 +94,27 @@ namespace Construct
 						// Удаляем задачу из колекции начального дня
 						form.Controls.Remove(actP);
 						days[beginDay].panCase.Remove(actP);
-						// Добавляем задачу в нужнй день
+						// Добавляем задачу в нужный день
 						days[i].panDay.Controls.Add(actP);
-						days[i].panCase.Add(actP);
-						actP.Left = 3;
-						actP.Top = days[i].posBot;
+						
+						for (int j = 0; j < days[i].panCase.Count(); j++)
+						{
+							if ((actP.Top + actP.Height/2 < days[i].panCase[j].Top + days[i].panCase[j].Height))
+							{
+								// Добавляем на нужную панельку, отображаем и меняем высоту
+								days[i].panCase.Insert(j, actP);
+								actP.Left = 3;
+								actP.Top = labVoid.Top;
+								b = false;
+								break;
+							}
+						}
+						if (b)
+						{
+							days[i].panCase.Insert(days[i].panCase.Count(), actP);
+							actP.Left = 3;
+							actP.Top = days[i].posBot;
+						}
 						days[i].posBot += actP.Height + 3;
 						// Изменяем координату последней задачи
 						days[beginDay].posBot -= actP.Height + 3;
