@@ -18,7 +18,7 @@ namespace Construct
 			// Координаты для прокрутки задач
 			internal int posTop = 28;
 			internal int posBot = 28;
-			internal int posLab = 28;
+			internal int posLab;
 			// Панелька дня
 			internal Panel panDay;
 			// Название дня

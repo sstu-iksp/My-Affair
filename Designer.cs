@@ -76,9 +76,6 @@ namespace Construct
 			{
 				days.Add(new Day(wn[i] + " - " + (DateTime.Now.Day - dayBegin + i), Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 600)));	// Переход с месяцем !!!
 				days[i].panDay.TabIndex = i;
-				// События привязанные к панели дня
-	//			days[i].panDay.MouseMove += (MouseMove_pmp);	// Прокрутка задач дня левой кнопкой мыши	***
-	//			days[i].panDay.MouseWheel += (MouseWheel_pmp);	// Прокрутка задач дня колесиком мыши		***
 				
 				days[i].labAddCase.MouseEnter += (MouseEnter_labAddCase);	// Наведение			***
 				days[i].labAddCase.MouseLeave += (MouseLeave_labAddCase);	// Наведение			***
@@ -94,8 +91,8 @@ namespace Construct
 					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
 				}
 			}
-			// Пустаяя панелька
-			labVoid = Core.CreateLab(days[0].panDay, 3, 28, 170, 30, 11);
+			// Пустой лейбл
+			labVoid = Core.CreateLab(days[0].panDay, 3, 28, 170, 30, 10);
 			labVoid.BackColor = Color.FromArgb(201, 201, 201);
 			labVoid.Visible = false;
 		}

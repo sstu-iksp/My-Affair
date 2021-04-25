@@ -28,7 +28,7 @@ namespace Construct
 		// Переменные для запоминания начальных координат панели (для теста)
 		static int actX;
 		static int actY;
-		// Переменные для запоминания начальных координат на панели (для теста)
+		// Переменные для запоминания начальных координат на панели
 		static int startX;
 		static int startY;
 		// Событие зажатия кнопки мыши на панели, отвечает за присвоение к активной панели, которая используется далее
@@ -39,24 +39,21 @@ namespace Construct
 			{
 				// Отображаем кнопку "удалить"
 				labDelete.Visible = true;
-				
+				// Запоминаем начальное положение курсора для перемещения задачи
 				startX = e.X;
 				startY = e.Y;
 				// Запоминаем панель и ее координаты, в условии проверяется нажатие на саму панель или ее составляющих
 				if ((sender as Panel) != null)		actP = (sender as Panel);
 				else if ((sender as Label) != null)	actP = (Panel)(sender as Label).Parent;
-				
 				// Запоминаем номер начального дня
 				beginDay = actP.Parent.TabIndex;
-				
-			//	actP.Parent.Controls.Remove(actP);						// Неизвестно, нужно или нет
-				
+				// Удаляем элемент из начальной колекции
 				days[beginDay].panCase.Remove(actP);
 				// Добавляем задачу на форму, для возможности перемещения вне начального дня
 				form.Controls.Add(actP);
 				// Сортируем список задач
 				days[beginDay].panCaseRedraw();
-				
+				// Запоминаем начальные координаты задачи (на данный момент не используются)
 				actX = actP.Left;
 				actY = actP.Top;
 				// Переносим на передний план
@@ -93,18 +90,6 @@ namespace Construct
 					if ((actP.Left + actP.Width/2 > days[i].panDay.Left) && (actP.Left + actP.Width/2 < days[i].panDay.Left + days[i].panDay.Width)
 					   && (actP.Top + actP.Height/2 > days[i].panDay.Top) && (actP.Top + actP.Height/2 < days[i].panDay.Top + days[i].panDay.Height))
 					{
-						/*
-						if (days[i].panCase.LastOrDefault() != null)			// ***
-						{
-							//days[i].panDay.Controls.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].panCase.LastOrDefault().Top + days[i].panCase.LastOrDefault().Height + 3));
-							days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].panCase.LastOrDefault().Top + days[i].panCase.LastOrDefault().Height + 3));
-						}
-						else
-						{
-							//days[i].panDay.Controls.Add(days[i].Copy_Case(days[i].panDay, 3, 28));
-							days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, 28));
-						}
-						*/
 						// Удаляем задачу из колекции начального дня
 						form.Controls.Remove(actP);
 						days[beginDay].panCase.Remove(actP);
@@ -113,27 +98,27 @@ namespace Construct
 						days[i].panCase.Add(actP);
 						actP.Left = 3;
 						actP.Top = days[i].posBot;
-				//		days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot));	// ---
 						days[i].posBot += actP.Height + 3;
 						// Изменяем координату последней задачи
 						days[beginDay].posBot -= actP.Height + 3;
-				//		actP.Dispose();																// ---
-					//	form.Controls.Remove(actP);	// (тест или нет)
-						cancel = false;						
+						cancel = false;
+						// Перерисовываем измененный список задач
+						days[i].posLab = 0;
+						days[i].panCaseRedraw();
 						// Перерисовываем список задач начального дня
-						days[beginDay].panCaseRedraw();
+						days[beginDay].panCaseRedraw();		// ***
 						break;
 					}
-					else if ((actP.Top + actP.Height/2 < days[i].panDay.Top) || true)	// 'Пуф'	!!! true в проверке !!!
+					if ((actP.Top + actP.Height/2 < days[i].panDay.Top) || true)	// 'Пуф'	!!! true в проверке !!!
 					{
 						form.Controls.Remove(actP);
 						days[beginDay].panCase.Remove(actP);
 						days[beginDay].posBot -= actP.Height + 3;
 						cancel = false;
-						days[beginDay].panCaseRedraw();
+						days[beginDay].panCaseRedraw();		// ***
 					}
 				}
-				// Возвращаем задачу задачу обратно на начальный день если она не была перемещена
+				// Возвращаем задачу задачу обратно на начальный день если она не была перемещена	(выключено)
 				if (cancel)
 				{
 					form.Controls.Remove(actP);
@@ -141,9 +126,7 @@ namespace Construct
 					
 					actP.Left = actX;
 					actP.Top = actY;
-					//actP.Dispose();	// че
 				}
-		//		actP.Dispose();
 				// Скрываем кнопку "удалить"
 				labDelete.Visible = false;
 				// Скрываем пустой лейбл
@@ -160,7 +143,7 @@ namespace Construct
 		{
 			if (act)
 			{
-				bool b = true;
+				int b = -1;
 				// Меняем местоположение задачи
 				actP.Left = actP.Left + e.X - startX;
 				actP.Top = actP.Top + e.Y - startY;
@@ -181,27 +164,28 @@ namespace Construct
 									labVoid.Top = days[i].panCase[j].Top;
 									days[i].posLab = labVoid.Top;
 									labVoid.Visible = true;
-								//	days[i].panCaseRedraw();
 								}
-								b = false;
+								b = i;
 								break;
 							}
 						}
-						if (b)
+						if (b < 0)
 						{
 							// Добавляем на нужную панельку, отображаем и меняем высоту
 							days[i].panDay.Controls.Add(labVoid);
 							labVoid.Top = days[i].posBot;
 							days[i].posLab = labVoid.Top;
 							labVoid.Visible = true;
-						//	days[i].panCaseRedraw();
 						}
 						break;
 					}
 				}
 				for (int i = 0; i < 7; i++)
 				{
-					days[i].panCaseRedraw();
+					// Сортировка всего ???
+					if (b != i)
+						days[i].posLab = 0;
+					days[i].panCaseRedraw();		// ***
 				}
 			}
 		}
