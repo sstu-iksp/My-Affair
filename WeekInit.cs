@@ -35,11 +35,11 @@ namespace Construct
 				panDay.BackColor = Color.FromArgb(129, 212, 238);
 				panDay.Visible = true;
 				// Название дня
-				labDay = Core.CreateLab(this.panDay, 5, 5, 165, 20, 12);
+				labDay = Core.CreateLab(this.panDay, 0, 0, panDay.Width, 28, 12);
 				labDay.BackColor = Color.FromArgb(129, 222, 238);
 				labDay.Text = name;
 				// Кнопка добавить
-				labAddCase = Core.CreateLab(this.panDay, 5, panDay.Height - 32, panDay.Width - 10, 27, 18);
+				labAddCase = Core.CreateLab(this.panDay, 0, panDay.Height - 28, panDay.Width, 28, 18);
 				labAddCase.BackColor = Color.FromArgb(129, 212, 228);
 				labAddCase.Text = "+";
 				labAddCase.TextAlign = ContentAlignment.MiddleCenter;
@@ -178,26 +178,20 @@ namespace Construct
 				// '20' - скорость прокрутки, чем больше значение тем медленнее скорость
 				if (panCase.LastOrDefault() != null)
 				{
+					int casesH = labDay.Height + labAddCase.Height;
+					foreach (Panel pan in panCase)
+						casesH += pan.Height + 3;
+										
 					// Ограничение на прокрутку вверх если достигли границы и прокрутку вниз, если кол-во задач не выходит за рамки
-					if (e.Delta < 0 && posTop < panCase[0].Top)
+					if (0 < e.Delta && panCase[0].Top < labDay.Top + labDay.Height)
 					{
 						foreach (Panel pan in panCase)
 							pan.Location = new Point(pan.Location.X, pan.Location.Y + e.Delta / 20);
 					}
-					else if (0 < e.Delta)	// Нужно добавить ограничение на прокрутку вниз !!!***!!!
+					else if (e.Delta < 0 && panDay.Height < casesH && labAddCase.Top < panCase.Last().Top + panCase.Last().Height)	// Нужно добавить ограничение на прокрутку вниз !!!***!!!
 					{
 						foreach (Panel pan in panCase)
 							pan.Location = new Point(pan.Location.X, pan.Location.Y + e.Delta / 20);
-					}
-					else
-					{
-						// Возращаем панельки на места, если они перешли границу в ходе прокрутки
-						posBot = posTop;
-						foreach (Panel pan in panCase)
-						{
-							pan.Top = posBot;
-							posBot += pan.Height + 3;
-						}
 					}
 					// Запоминаем нижнюю границу последней задачи
 					posBot = panCase.LastOrDefault().Top + panCase.LastOrDefault().Height + 3;
