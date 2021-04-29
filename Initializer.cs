@@ -11,75 +11,79 @@ using System.Runtime.InteropServices;
 namespace Construct
 {
 	// Здесь хранятся методы, которые выводят что-либо на экран 		*В РАЗРАБОТКЕ*
-	
 	partial class MainForm
 	{
-		List<Panel> weekday = new List<Panel>();
-		List<Label> weekdayName = new List<Label>();
-		string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-		
-		// Метод отображающий дни недели на экран, (заменен)
-		internal void InitializeWeek()
+		// Лейбл "Назад"
+		internal static Label labBackard = Core.CreateLab(panWeekMain, 15, panWeekMain.Height - 60, 355, 50, 18);
+		// Лейбл "Вперед"
+		internal static Label labForward = Core.CreateLab(panWeekMain, panWeekMain.Width - 365, panWeekMain.Height - 60, 355, 50, 18);
+		// Лейбл "Удалить"
+		internal static Label labDelete = Core.CreateLab(panWeekMain, 490, 5, 300, 40, 16);
+		// Кнопка "Выйти"
+		internal static Label labExit = Core.CreateLab(panWeekMain, 1200, 5, 70, 20, 10);
+		// Отображение различных элементов
+		internal void InitializeElements()
 		{
-			panMidPanel.Visible = true;
-			Controls.Add(panMidPanel);
-			
-			for(int i = 0; i < 7; i++)
+			labBackard.Text = "<<<";
+			labBackard.BackColor = Color.FromArgb(133, 238, 176);
+			labBackard.MouseClick += (MouseClick_labBackard);
+			labBackard.MouseEnter += (MouseEnter_labBF);
+			labBackard.MouseLeave += (MouseLeave_labBF);
+			labForward.Text = ">>>";
+			labForward.BackColor = Color.FromArgb(133, 238, 176);
+			labForward.MouseClick += (MouseClick_labForward);
+			labForward.MouseEnter += (MouseEnter_labBF);
+			labForward.MouseLeave += (MouseLeave_labBF);
+			labDelete.Text = "удалить";
+			labDelete.BackColor = Color.FromArgb(245, 162, 142);
+			labDelete.Visible = false;
+			labExit.Text = "Выйти";
+			labExit.BackColor = Color.FromArgb(129, 202, 228);
+			labExit.MouseClick += (MouseClick_labExit);
+			labExit.MouseEnter += (MouseEnter_labExit);
+			labExit.MouseLeave += (MouseLeave_labExit);
+		}
+		// Событие нажатия на кнопку "Назад"
+		internal void MouseClick_labBackard(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
 			{
-				weekday.Add(Core.CreatePan(panMidPanel, 15 + i * 180, 100, 175, 400));
-				weekdayName.Add(Core.CreateLab(weekday[i], 5, 5, 165, 20, 12));
+				for(int i = 0; i < 7; i++)
+				{
+					days[i].panCase.Clear();
+				}
 				
-				weekday[i].BackColor = Color.FromArgb(129, 212, 238);
-				weekday[i].Visible = true;
-				weekday[i].MouseMove += (MouseMove_pmp);	//************
-	//			weekday[i].MouseWheel += (MouseWheel_pmp);	//************
-				
-				weekdayName[i].BackColor = Color.FromArgb(129, 222, 238);
-				weekdayName[i].Text = wn[i];
-				weekdayName[i].Visible = true;
+				DrawWeek(17, 4, 6, false);
+			}
+		}
+		// Событие нажатия на кнопку "Вперед"
+		internal void MouseClick_labForward(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				for(int i = 0; i < 7; i++)
+				{
+					days[i].panCase.Clear();
+				}
+				DrawWeek(3, 6, 4, false);
+			}
+		}
+		// Событие нажатия на кнопку "Выйти"
+		internal void MouseClick_labExit(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				panRegMain.Visible = true;
+				panWeekMain.Visible = false;
 			}
 		}
 		
-		
-		
-		static Panel panCasePanel = Core.CreatePan(panMidPanel, 1100, 590, 170, 100);
-		Label labCaseName = Core.CreateLab(panCasePanel, 5, 5, 105, 20, 11);
-		Label labCaseTime = Core.CreateLab(panCasePanel, 110, 5, 55, 20, 11);
-		Label labCaseDesc = Core.CreateLab(panCasePanel, 5, 26, 160, 70, 9);
-		
-		// Устанавливаем тестовую задачу
-		internal void InitializeCase()
-		{
-			panCasePanel.BackColor = Color.FromArgb(133, 238, 186);
-			
-			labCaseName.BackColor = Color.FromArgb(133, 248, 186);
-			labCaseTime.BackColor = Color.FromArgb(133, 238, 176);
-			labCaseDesc.BackColor = Color.FromArgb(133, 228, 166);
-			
-			labCaseName.TextAlign = ContentAlignment.MiddleLeft;
-			labCaseTime.TextAlign = ContentAlignment.MiddleRight;
-			labCaseDesc.TextAlign = ContentAlignment.TopLeft;
-			
-			labCaseName.Text = "Name";
-			labCaseTime.Text = "Time";
-			labCaseDesc.Text = "Description\nyep";
-			
-			panCasePanel.Visible = true;
-			
-			// Присваиваем события для панели и ее составляющих
-			panCasePanel.MouseMove += (MouseMove_Case);
-			labCaseName.MouseMove += (MouseMove_Case);
-			labCaseTime.MouseMove += (MouseMove_Case);
-			labCaseDesc.MouseMove += (MouseMove_Case);
-			panCasePanel.MouseMove += (MouseDown_Case);
-			labCaseName.MouseDown += (MouseDown_Case);
-			labCaseTime.MouseDown += (MouseDown_Case);
-			labCaseDesc.MouseDown += (MouseDown_Case);
-			panCasePanel.MouseUp += (MouseUp_Case);
-			labCaseName.MouseUp += (MouseUp_Case);
-			labCaseTime.MouseUp += (MouseUp_Case);
-			labCaseDesc.MouseUp += (MouseUp_Case);
-		}
+		// Событие наведения на кнопки "Назад" и "Вперед"
+		internal void MouseEnter_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(113, 228, 156); }
+		internal void MouseLeave_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(133, 238, 176); }
+		// Событие наведения на кнопку "Выйти"
+		internal void MouseEnter_labExit(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 208); }
+		internal void MouseLeave_labExit(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 202, 228); }
 	}
 }
 

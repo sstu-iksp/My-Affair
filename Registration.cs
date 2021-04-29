@@ -14,25 +14,30 @@ namespace Construct
 	
 	partial class MainForm
 	{
-		static Panel panRegPanel = Core.CreatePan(0, 0, 1280, 720);
-		
-		static Panel panReg = Core.CreatePan(panRegPanel, 400, 150, 480, 420);
+		// Панель регистрации
+		static Panel panRegMain = Core.CreatePan(0, 0, 1280, 720);
+		// Панель  формы регистрации
+		static Panel panReg = Core.CreatePan(panRegMain, 400, 150, 480, 420);
+		// Название
 		Label labReg = Core.CreateLab(panReg, 5, 5, 470, 40, 16);
-		
+		// Логин и Пароль
 		Label labRegLog = Core.CreateLab(panReg, 5, 100, 165, 20, 12);
 		Label labRegPar = Core.CreateLab(panReg, 5, 200, 165, 20, 12);
-		
+		// Ввод для логина и пароля
 		TextBox boxRegLog = Core.CreateBox(panReg, 5, 125, 165, 20, 12);
 		TextBox boxRegPar = Core.CreateBox(panReg, 5, 225, 165, 20, 12);
-		
+		// Кнопка "Войти"
 		Label labRegEnter = Core.CreateLab(panReg, 355, 375, 120, 40, 12);
 		
+		// Метод для инициализаии регистрации
 		internal void InitializeReg()
 		{
-			Controls.Add(panRegPanel);
+			Controls.Add(panRegMain);
+			// Цвет панельки регистрации
+			panRegMain.BackColor = Color.FromArgb(255, 216, 177);
 			
-			panRegPanel.Visible = true;
-			panMidPanel.Visible = false;
+			panRegMain.Visible = true;
+			panWeekMain.Visible = false;
 							
 			panReg.BackColor = Color.FromArgb(129, 212, 238);
 			panReg.Visible = true;
@@ -51,6 +56,8 @@ namespace Construct
 			labRegEnter.MouseClick += (MouseClick_labRegEnter);
 			labRegEnter.MouseEnter += (MouseEnter_labRegEnter);
 			labRegEnter.MouseLeave += (MouseLeave_labRegEnter);
+			
+		//	InitializeWeekCal();	// *******
 		}
 		
 		// Событие кнопки "Войти", которое должно проверять введенные поля и сверять данные с базой данных	*В РАЗРАБОТКЕ*
@@ -58,8 +65,8 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				panMidPanel.Visible = true;
-				panRegPanel.Visible = false;
+				panWeekMain.Visible = true;
+				panRegMain.Visible = false;
 			}
 		}
 		

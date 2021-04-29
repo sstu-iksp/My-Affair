@@ -14,105 +14,201 @@ namespace Construct
 	{
 		// Главная и единственная форма
 		static Form form;
-		// Главная панель
-		static Panel panMidPanel = Core.CreatePan(0, 0, 1280, 720);
-		
+		// Панель недели
+		static Panel panWeekMain = Core.CreatePan(0, 0, 1280, 720);
+		// Определяем года
+		static Сalendar.Year[] year =
+		{
+			new Сalendar.Year(Convert.ToInt32(DateTime.Now.ToString("yyyy")) - 1),
+			new Сalendar.Year(Convert.ToInt32(DateTime.Now.ToString("yyyy"))),
+			new Сalendar.Year(Convert.ToInt32(DateTime.Now.ToString("yyyy")) + 1)
+		};
+		// Инициализация всех компонентов
 		internal void InitializeComponent()
 		{
+			// Всякие настройки
 			AutoScaleDimensions = new SizeF(8F, 16F);
 			AutoScaleMode = AutoScaleMode.Font;
 			// Делает границу фиксированной
 			FormBorderStyle = FormBorderStyle.FixedSingle;
 			// Блокировка полноэкранного режима
 			MaximizeBox = false;
-			// Метод создающий окно
+			// Создаем основную форму
 			form = Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
-			
+			// Включаем возможность отслеживания нажатия клавиш
+			form.KeyPreview = true;
+			// Цвет формы (скрыта)
+			form.BackColor = Color.FromArgb(255, 216, 177);
+			// Цвет панельки недели
+			panWeekMain.BackColor = Color.FromArgb(255, 216, 177);
 			// Отображаем главную панель
-			panMidPanel.Visible = true;
-			Controls.Add(panMidPanel);
-			
+			panWeekMain.Visible = true;
+			Controls.Add(panWeekMain);
 			// Вывод дней недели
-			InitializeW();
-			// Вывод тестовой задачи
-			InitializeCase();
-			
+			InitializeWeek();
+			// Вывод регистрации/авторизации
 			InitializeReg();
+			// Ввод различных элементов
+			InitializeElements();
 			
-			// Вывод дней недели
-	//		InitializeWeek();	// (тест)
+			panWeekMain.MouseClick += (MouseClick_Outside);	// Для заполнения задачи
 		}
 		
 		// Коллекция для хранения дней недели
-		static internal List<Сalendar.Day> days = new List<Сalendar.Day>();
-		
-		// Метод создающий дни недели, которые отображаются на экран, размер дня 175x400 px
-		internal void InitializeW()
+		static internal List<Day> days = new List<Day>();
+		// Просто массив с днями недели
+		internal string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+		Dictionary<string, int> dayWeek = new Dictionary<string, int>();
+		// Пустаяя панелька
+		static internal Label labVoid;
+		// Метод создающий дни недели, которые отображаются на экран, размер панельки дня 175x400 px
+		internal void InitializeWeek()
 		{
+			//***																														// ТЕСТ
+			year[1].listMonth[2].listDay[24].cases.Add(new Сalendar.Case("Тест", "11:11", "Да да я"));
+			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Позавтракать", "09:00", "Чтобы вырасти, нужно хорошо питаться"));
+			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Поужинать", "12:00", "Чтобы вырасти, нужно хорошо питаться x2"));
+			year[1].listMonth[3].listDay[25].cases.Add(new Сalendar.Case("Пара", "09:45-11:15", "Пара по 1С"));
+			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите"));
+			year[1].listMonth[3].listDay[29].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите"));
+			//***
+			
 			for(int i = 0; i < 7; i++)
+				dayWeek.Add(wn[i], i);
+			// Определяем переменную для определения первого дня недели
+			int dayBegin = dayWeek[DateTime.Now.DayOfWeek.ToString()] + 1;
+			
+			for(int i = 0; i < 7; i++)																// Нижний код в какой нибуть метод лучше
 			{
-				days.Add(new Сalendar.Day(wn[i], Core.CreatePan(panMidPanel, 15 + i * 180, 100, 175, 400)));
+				int numYear = 1;
+				int numDay = DateTime.Now.Day - dayBegin + i;
+				int mon = 1;
 				
-				// События привязанные к панели дня
-				days[i].panDay.MouseMove += (MouseMove_pmp);	// Прокрутка задач дня левой кнопкой мыши	***
-	//			days[i].panDay.MouseWheel += (MouseWheel_pmp);	// Прокрутка задач дня колесиком мыши		***
+				// Если в момент обхода обращаемся к прошлому месяцу	(29 30 *1* 2 3 4 5)
+				if (numDay < 0)
+				{
+					mon = 2;
+					numDay = year[numYear].listMonth[DateTime.Now.Month - mon].listDay.Count() - dayBegin + i;
+				}
+				// Если в момент обхода обращаемся к следующему месяцу	(26 27 *28* 29 30 1 2)
+				else if (year[numYear].listMonth[DateTime.Now.Month - mon].listDay.Count() <= numDay)
+				{
+					mon = 0;
+					numDay = i - dayBegin - 1;
+				}
+				// Если в момент обхода обращаемся к прошлому году
+				if (DateTime.Now.Month - mon < 0)										// Не проверено	***
+				{
+					
+				}
+				// Если в момент обхода обращаемся к следующему году
+				else if (year[numYear].listMonth.Count() <= DateTime.Now.Month - mon)	// Не проверено
+				{
+					mon = 12;
+					numYear = 2;
+					numDay = i - dayBegin - 2;
+				}
 				
-				days[i].labAddCase.MouseEnter += (MouseEnter_labAddCase);	// Наведение			***
-				days[i].labAddCase.MouseLeave += (MouseLeave_labAddCase);	// Наведение			***
+				days.Add(new Day(wn[i] + " - " + (numDay + 1), Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 600)));	// Переход с месяцем !!!
+				days[i].panDay.TabIndex = i;
 				
+				// Заполняем дни недели на экране задачами из классов
+				foreach(Сalendar.Case cs in year[numYear].listMonth[DateTime.Now.Month - mon].listDay[numDay].cases)	// С месяцем проблеммы тоже !!!
+				{
+					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description));
+					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
+				}
+			}
+			// Пустой лейбл
+			labVoid = Core.CreateLab(days[0].panDay, 3, 28, 170, 30, 10);
+			labVoid.BackColor = Color.FromArgb(201, 201, 201);
+			labVoid.Visible = false;
+		}
+		
+		// Метод перерисовывающий дни недели
+		internal void DrawWeek(int dayNow, int monthNow, int weekDay, bool v)
+		{
+			// Определяем переменную для определения первого дня недели
+			int dayBegin = weekDay + 1;
+			
+			for(int i = 0; i < 7; i++)																// Нижний код в какой нибуть метод лучше
+			{
+				int numYear = 1;
+				int numDay = dayNow - dayBegin + i;
+				int mon = 1;
+				
+				// Если в момент обхода обращаемся к прошлому месяцу	(29 30 *1* 2 3 4 5)
+				if (numDay < 0)
+				{
+					mon = 2;
+					numDay = year[numYear].listMonth[monthNow - mon].listDay.Count() - dayBegin + i;
+				}
+				// Если в момент обхода обращаемся к следующему месяцу	(26 27 *28* 29 30 1 2)
+				else if (year[numYear].listMonth[monthNow - mon].listDay.Count() <= numDay)
+				{
+					mon = 0;
+					numDay = i - dayBegin - 1;
+				}
+				// Если в момент обхода обращаемся к прошлому году
+				if (monthNow - mon < 0)										// Не проверено	***
+				{
+					
+				}
+				// Если в момент обхода обращаемся к следующему году
+				else if (year[numYear].listMonth.Count() <= monthNow - mon)	// Не проверено
+				{
+					mon = 12;
+					numYear = 2;
+					numDay = i - dayBegin - 2;
+				}
+				
+				// Меняем номер дня
+				days[i].labDay.Text = wn[i] + " - " + (numDay + 1);
+				
+				// Заполняем дни недели на экране задачами из классов
+				foreach(Сalendar.Case cs in year[numYear].listMonth[monthNow - mon].listDay[numDay].cases)	// С месяцем проблеммы тоже !!!
+				{
+					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description));
+					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
+				}
 			}
 		}
 		
 		
-		static int panNum;
-		static List<Panel> panCase = new List<Panel>();
 		
-		// Временный метод позволяющий копировать задачу
-		internal static Panel Copy_Case(Panel pan, int x, int y)
+		// Коллекция лейблов для календаря
+		List<Label> kry = new List<Label>();
+		// Вывод календаря
+		internal void InitializeWeekCal()
 		{
-			//weekday
-			panCase.Add(Core.CreatePan(pan, x, y, 170, 100));
-			Label labCaseNameT = Core.CreateLab(panCase[panNum], 5, 5, 105, 20, 11);
-			Label labCaseTimeT = Core.CreateLab(panCase[panNum], 110, 5, 55, 20, 11);
-			Label labCaseDescT = Core.CreateLab(panCase[panNum], 5, 26, 160, 70, 9);
-			PictureBox pbTest = Core.CreatePB(panCase[panNum], 1, 1, 1, 1);
+			int j = 0;
 			
-			panCase[panNum].BackColor = Color.FromArgb(133, 238, 186);
+			for(int i = 0; i < 42; i++)
+			{
+				if (i % 7 == 0 && i != 0)
+					j++;
+				
+				kry.Add(Core.CreateLab(panRegMain, 50 + i * 55 - j * 385, 50 + j * 55, 50, 50, 18));
+				kry[i].BackColor = Color.FromArgb(201, 201, 201);
+			//	kry[i].Text = i + "";
+			}
 			
-			labCaseNameT.BackColor = Color.FromArgb(133, 248, 186);
-			labCaseTimeT.BackColor = Color.FromArgb(133, 238, 176);
-			labCaseDescT.BackColor = Color.FromArgb(133, 228, 166);
+			// Определяем переменную для определения первого дня недели
+			int dayBegin = dayWeek[DateTime.Now.DayOfWeek.ToString()];
 			
-			labCaseNameT.TextAlign = ContentAlignment.MiddleLeft;
-			labCaseTimeT.TextAlign = ContentAlignment.MiddleRight;
-			labCaseDescT.TextAlign = ContentAlignment.TopLeft;
-			
-			labCaseNameT.Text = "Name";
-			labCaseTimeT.Text = "Time";
-			labCaseDescT.Text = "Description\nyep";
-			
-			// Присваиваем события для панели и ее составляющих
-			panCase[panNum].MouseMove += (MouseMove_Case);
-			labCaseNameT.MouseMove += (MouseMove_Case);
-			labCaseTimeT.MouseMove += (MouseMove_Case);
-			labCaseDescT.MouseMove += (MouseMove_Case);
-			panCase[panNum].MouseMove += (MouseDown_Case);
-			labCaseNameT.MouseDown += (MouseDown_Case);
-			labCaseTimeT.MouseDown += (MouseDown_Case);
-			labCaseDescT.MouseDown += (MouseDown_Case);
-			panCase[panNum].MouseUp += (MouseUp_Case);
-			labCaseNameT.MouseUp += (MouseUp_Case);
-			labCaseTimeT.MouseUp += (MouseUp_Case);
-			labCaseDescT.MouseUp += (MouseUp_Case);
-			
-			panCase[panNum].Visible = true;
-			
-			return panCase[panNum++];
+			for(int i = dayBegin; i < year[1].listMonth[DateTime.Now.Month - 1].listDay.Count() + dayBegin; i++)
+			{
+				kry[i].BackColor = Color.FromArgb(128, 128, 0);
+				kry[i].Text = (i - dayBegin + 1) + "";
+				// Выделяем сегодняшний день
+				if (i == DateTime.Now.Day - 1 + dayBegin)
+				{
+					kry[i].BackColor = Color.FromArgb(128, 0, 128);
+				}
+			}
 		}
 		
 		
-		
-
 	}
 }
 
