@@ -1,0 +1,7 @@
+D:\My-Affair\obj\Debug\Construct.csprojAssemblyReference.cache
+D:\My-Affair\obj\Debug\Construct.csproj.CoreCompileInputs.cache
+D:\My-Affair\bin\Debug\Construct.exe.config
+D:\My-Affair\bin\Debug\Construct.exe
+D:\My-Affair\bin\Debug\Construct.pdb
+D:\My-Affair\obj\Debug\Construct.exe
+D:\My-Affair\obj\Debug\Construct.pdb

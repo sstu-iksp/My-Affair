@@ -48,11 +48,11 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				for(int i = 0; i < 7; i++)
+				for (int i = 0; i < 7; i++)
 				{
 					days[i].panCase.Clear();
 				}
-				
+
 				DrawWeek(17, 4, 6, false);
 			}
 		}
@@ -61,7 +61,7 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				for(int i = 0; i < 7; i++)
+				for (int i = 0; i < 7; i++)
 				{
 					days[i].panCase.Clear();
 				}
@@ -77,7 +77,7 @@ namespace Construct
 				panWeekMain.Visible = false;
 			}
 		}
-		
+
 		// Событие наведения на кнопки "Назад" и "Вперед"
 		internal void MouseEnter_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(113, 228, 156); }
 		internal void MouseLeave_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(133, 238, 176); }
