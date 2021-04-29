@@ -47,6 +47,13 @@ namespace Construct
 				labAddCase.MouseClick += (MouseClick_labAddCase);
 				// Прокрутка задач колесиком мыши
 				panDay.MouseWheel += (MouseWheel_Case);
+				
+				labAddCase.MouseEnter += (MouseEnter_labAddCase);	// Наведение			***
+				labAddCase.MouseLeave += (MouseLeave_labAddCase);	// Наведение			***
+				
+				panDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
+				labDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
+				labAddCase.MouseClick += (MouseClick_Outside);		// Для заполнения задачи	#
 			}
 			// Метод добавляющий новую задачу
 			internal void caseAdd(Panel pan)
@@ -67,7 +74,7 @@ namespace Construct
 				{
 					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
 					caseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
-					year.listMonth[0].listDay[0].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));
+					year[1].listMonth[0].listDay[0].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));
 					// ***
 					labAddCase.Text = panCase.Count() + " ";				// -------------------------------------------------- DEBAG
 					// ***
@@ -181,7 +188,7 @@ namespace Construct
 					int casesH = labDay.Height + labAddCase.Height;
 					foreach (Panel pan in panCase)
 						casesH += pan.Height + 3;
-										
+					
 					// Ограничение на прокрутку вверх если достигли границы и прокрутку вниз, если кол-во задач не выходит за рамки
 					if (0 < e.Delta && panCase[0].Top < labDay.Top + labDay.Height)
 					{

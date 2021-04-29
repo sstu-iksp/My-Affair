@@ -56,6 +56,8 @@ namespace Construct
 			labRegEnter.MouseClick += (MouseClick_labRegEnter);
 			labRegEnter.MouseEnter += (MouseEnter_labRegEnter);
 			labRegEnter.MouseLeave += (MouseLeave_labRegEnter);
+			
+		//	InitializeWeekCal();	// *******
 		}
 		
 		// Событие кнопки "Войти", которое должно проверять введенные поля и сверять данные с базой данных	*В РАЗРАБОТКЕ*
