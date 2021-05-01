@@ -15,19 +15,19 @@ namespace Construct
 	partial class MainForm
 	{
 		// Панель регистрации
-		static Panel panRegMain = Core.CreatePan(0, 0, 1280, 720);
+		internal static Panel panRegMain = Core.CreatePan(0, 0, 1280, 720);
 		// Панель  формы регистрации
-		static Panel panReg = Core.CreatePan(panRegMain, 400, 150, 480, 420);
+		internal static Panel panReg = Core.CreatePan(panRegMain, 400, 150, 480, 420);
 		// Название
-		Label labReg = Core.CreateLab(panReg, 5, 5, 470, 40, 16);
+		internal Label labReg = Core.CreateLab(panReg, 5, 5, 470, 40, 16);
 		// Логин и Пароль
-		Label labRegLog = Core.CreateLab(panReg, 5, 100, 165, 20, 12);
-		Label labRegPar = Core.CreateLab(panReg, 5, 200, 165, 20, 12);
+		internal Label labRegLog = Core.CreateLab(panReg, 5, 100, 165, 20, 12);
+		internal Label labRegPar = Core.CreateLab(panReg, 5, 200, 165, 20, 12);
 		// Ввод для логина и пароля
-		TextBox boxRegLog = Core.CreateBox(panReg, 5, 125, 165, 20, 12);
-		TextBox boxRegPar = Core.CreateBox(panReg, 5, 225, 165, 20, 12);
+		internal TextBox boxRegLog = Core.CreateBox(panReg, 5, 125, 165, 20, 12);
+		internal TextBox boxRegPar = Core.CreateBox(panReg, 5, 225, 165, 20, 12);
 		// Кнопка "Войти"
-		Label labRegEnter = Core.CreateLab(panReg, 355, 375, 120, 40, 12);
+		internal Label labRegEnter = Core.CreateLab(panReg, 355, 375, 120, 40, 12);
 		
 		// Метод для инициализаии регистрации
 		internal void InitializeReg()
@@ -40,7 +40,7 @@ namespace Construct
 			panWeekMain.Visible = false;
 							
 			panReg.BackColor = Color.FromArgb(129, 212, 238);
-			panReg.Visible = true;
+		//	panReg.Visible = true;
 			
 			labReg.BackColor = Color.FromArgb(129, 212, 238);
 			labReg.Text = "Добро пожаловать";
@@ -51,13 +51,13 @@ namespace Construct
 			boxRegPar.PasswordChar = '*';
 			
 			labRegEnter.BackColor = Color.FromArgb(129, 222, 238);
-			labRegEnter.Text = "Войти";
+			labRegEnter.Text = "Выйти";
 			
 			labRegEnter.MouseClick += (MouseClick_labRegEnter);
 			labRegEnter.MouseEnter += (MouseEnter_labRegEnter);
 			labRegEnter.MouseLeave += (MouseLeave_labRegEnter);
 			
-		//	InitializeWeekCal();	// *******
+			InitializeCalendarView();	// *******
 		}
 		
 		// Событие кнопки "Войти", которое должно проверять введенные поля и сверять данные с базой данных	*В РАЗРАБОТКЕ*

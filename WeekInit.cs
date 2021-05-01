@@ -16,8 +16,8 @@ namespace Construct
 		internal class Day											// 		*В РАЗРАБОТКЕ*
 		{
 			// Координаты для прокрутки задач
-			internal int posTop = 28;
-			internal int posBot = 28;
+			internal int posTop;
+			internal int posBot;
 			internal int posLab;
 			// Панелька дня
 			internal Panel panDay;
@@ -54,15 +54,18 @@ namespace Construct
 				panDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
 				labDay.MouseClick += (MouseClick_Outside);			// Для заполнения задачи	#
 				labAddCase.MouseClick += (MouseClick_Outside);		// Для заполнения задачи	#
+				
+				posTop = labDay.Height;
+				posBot = labDay.Height;
 			}
 			// Метод добавляющий новую задачу
-			internal void caseAdd(Panel pan)
+			internal void CaseAdd(Panel pan)
 			{
 				panCase.Add(pan);
 				posBot += pan.Height + 3;
 			}
 			// Метод удаляющий задачу
-			internal void caseRemove(Panel pan)
+			internal void CaseRemove(Panel pan)
 			{
 				panCase.Remove(pan);
 				posBot -= pan.Height + 3;
@@ -73,7 +76,7 @@ namespace Construct
 				if (e.Button == MouseButtons.Left)
 				{
 					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
-					caseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
+					CaseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
 					year[1].listMonth[0].listDay[0].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));
 					// ***
 					labAddCase.Text = panCase.Count() + " ";				// -------------------------------------------------- DEBAG
@@ -82,10 +85,8 @@ namespace Construct
 			}
 			// Временный метод позволяющий копировать задачу, а точнее создать пустую
 			internal Panel Copy_Case(Panel pan, int x, int y, string name, string time, string desc)
-			{
-		//		panCase.Add(Core.CreatePan(pan, x, y, 170, 100));
-				
-				Panel p = Core.CreatePan(pan, x, y, 170, 100);	// ***
+			{				
+				Panel p = Core.CreatePan(pan, x, y, 170, 100);
 				
 				Label labCaseNameT = Core.CreateLab(p, 5, 5, 105, 20, 11);
 				Label labCaseTimeT = Core.CreateLab(p, 110, 5, 55, 20, 11);
@@ -93,7 +94,7 @@ namespace Construct
 				
 				TextBox boxCaseNameT = Core.CreateBox(p, 5, 5, 105, 20, 10, true);
 			//	TextBox boxCaseTimeT = Core.CreateBox(p, 110, 5, 55, 20, 11, true);
-				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 110, 5, 55, 20, 8, true);	// Проблемы с размерами (Высота независима)
+				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 110, 5, 55, 20, 8, true);	// Проблемы с размерами (Высота зависит от шрифта)
 				TextBox boxCaseDescT = Core.CreateBox(p, 5, 26, 160, 70, 9, true);
 				
 				labCaseNameT.TabIndex = 0;
@@ -129,41 +130,37 @@ namespace Construct
 				boxCaseNameT.Text = name;
 				boxCaseTimeT.Text = time;
 				boxCaseDescT.Text = desc;
-				
 				// Присваиваем события для панели и ее составляющих
 				p.MouseMove += (MouseMove_Case);
 				p.MouseDown += (MouseDown_Case);
 				p.MouseUp += (MouseUp_Case);
-				
+				// События для возможности выбора задачи
 				labCaseNameT.MouseMove += (MouseMove_Case);
 				labCaseNameT.MouseDown += (MouseDown_Case);
 				labCaseNameT.MouseUp += (MouseUp_Case);
-				
+				// События для возможности выбора задачи
 				labCaseTimeT.MouseMove += (MouseMove_Case);
 				labCaseTimeT.MouseDown += (MouseDown_Case);
 				labCaseTimeT.MouseUp += (MouseUp_Case);
-				
+				// События для возможности выбора задачи
 				labCaseDescT.MouseMove += (MouseMove_Case);
 				labCaseDescT.MouseDown += (MouseDown_Case);
 				labCaseDescT.MouseUp += (MouseUp_Case);
-				
+				// События для возможности выбора задачи
 				boxCaseNameT.MouseDown += (MouseDown_Case);
 				boxCaseTimeT.MouseDown += (MouseDown_Case);
 				boxCaseDescT.MouseDown += (MouseDown_Case);
-				
-				p.MouseClick += (MouseClick_Outside);				// Для заполнения задачи	#
-				labCaseNameT.MouseClick += (MouseClick_Outside);	// Для заполнения задачи	#
-				labCaseTimeT.MouseClick += (MouseClick_Outside);	// Для заполнения задачи	#
-				labCaseDescT.MouseClick += (MouseClick_Outside);	// Для заполнения задачи	#
+				// События для выхода из режима заполнения задачи
+				p.MouseClick += (MouseClick_Outside);
+				labCaseNameT.MouseClick += (MouseClick_Outside);
+				labCaseTimeT.MouseClick += (MouseClick_Outside);
+				labCaseDescT.MouseClick += (MouseClick_Outside);
 				
 				p.Visible = true;
-				
-		//		panCase.Add(p);
-		
 				return p;
 			}
 			// Метод перерисовывающий весь список задач
-			internal void panCaseRedraw()
+			internal void PanCaseRedraw()
 			{
 				posBot = posTop;
 				foreach (Panel pan in panCase)
@@ -175,7 +172,7 @@ namespace Construct
 				}
 			}
 			// Метод переписывающий задачу
-			internal void panCaseRewrite()
+			internal void PanCaseRewrite()
 			{
 				
 			}
@@ -185,17 +182,17 @@ namespace Construct
 				// '20' - скорость прокрутки, чем больше значение тем медленнее скорость
 				if (panCase.LastOrDefault() != null)
 				{
+					// Переменная для подсчета места занимаемого задачами
 					int casesH = labDay.Height + labAddCase.Height;
 					foreach (Panel pan in panCase)
 						casesH += pan.Height + 3;
-					
-					// Ограничение на прокрутку вверх если достигли границы и прокрутку вниз, если кол-во задач не выходит за рамки
+					// Ограничения на прокрутку вверх если достигли границы и прокрутку вниз, если кол-во задач не выходит за рамки
 					if (0 < e.Delta && panCase[0].Top < labDay.Top + labDay.Height)
 					{
 						foreach (Panel pan in panCase)
 							pan.Location = new Point(pan.Location.X, pan.Location.Y + e.Delta / 20);
 					}
-					else if (e.Delta < 0 && panDay.Height < casesH && labAddCase.Top < panCase.Last().Top + panCase.Last().Height)	// Нужно добавить ограничение на прокрутку вниз !!!***!!!
+					else if (e.Delta < 0 && panDay.Height < casesH && labAddCase.Top < panCase.Last().Top + panCase.Last().Height)
 					{
 						foreach (Panel pan in panCase)
 							pan.Location = new Point(pan.Location.X, pan.Location.Y + e.Delta / 20);
@@ -204,7 +201,7 @@ namespace Construct
 					posBot = panCase.LastOrDefault().Top + panCase.LastOrDefault().Height + 3;
 				}
 				// ***
-				labAddCase.Text = panCase.Count() + " ";		// ------------------------------- DEBAG
+				labAddCase.Text = panCase.Count() + " ";											// ------------------------------- DEBAG
 				// ***
 			}
 			

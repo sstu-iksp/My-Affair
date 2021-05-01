@@ -22,7 +22,7 @@ namespace Construct
 			internal Year(int year)
 			{
 				yearInt = year;
-				for(int i = 1; i <= 12; i++)
+				for (int i = 1; i <= 12; i++)
 					listMonth.Add(new Month(i, yearInt));
 			}
 			
@@ -37,7 +37,7 @@ namespace Construct
 			{
 				monthInt = number;
 				
-				for(int i = 0; i < DateTime.DaysInMonth(year, monthInt); i++)
+				for (int i = 0; i < DateTime.DaysInMonth(year, monthInt); i++)
 					listDay.Add(new Day(i));
 			}
 			

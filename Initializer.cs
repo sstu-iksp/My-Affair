@@ -14,7 +14,7 @@ namespace Construct
 	partial class MainForm
 	{
 		// Лейбл "Назад"
-		internal static Label labBackard = Core.CreateLab(panWeekMain, 15, panWeekMain.Height - 60, 355, 50, 18);
+		internal static Label labBackward = Core.CreateLab(panWeekMain, 15, panWeekMain.Height - 60, 355, 50, 18);
 		// Лейбл "Вперед"
 		internal static Label labForward = Core.CreateLab(panWeekMain, panWeekMain.Width - 365, panWeekMain.Height - 60, 355, 50, 18);
 		// Лейбл "Удалить"
@@ -24,11 +24,11 @@ namespace Construct
 		// Отображение различных элементов
 		internal void InitializeElements()
 		{
-			labBackard.Text = "<<<";
-			labBackard.BackColor = Color.FromArgb(133, 238, 176);
-			labBackard.MouseClick += (MouseClick_labBackard);
-			labBackard.MouseEnter += (MouseEnter_labBF);
-			labBackard.MouseLeave += (MouseLeave_labBF);
+			labBackward.Text = "<<<";
+			labBackward.BackColor = Color.FromArgb(133, 238, 176);
+			labBackward.MouseClick += (MouseClick_labBackard);
+			labBackward.MouseEnter += (MouseEnter_labBF);
+			labBackward.MouseLeave += (MouseLeave_labBF);
 			labForward.Text = ">>>";
 			labForward.BackColor = Color.FromArgb(133, 238, 176);
 			labForward.MouseClick += (MouseClick_labForward);
@@ -43,17 +43,35 @@ namespace Construct
 			labExit.MouseEnter += (MouseEnter_labExit);
 			labExit.MouseLeave += (MouseLeave_labExit);
 		}
+		// Переменные для запоминания текущего дня и месяца
+		int ddd;
+		int mmm;
 		// Событие нажатия на кнопку "Назад"
 		internal void MouseClick_labBackard(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				for(int i = 0; i < 7; i++)
+				// Очищаем контролы панели  и коллекцию задач
+				for (int i = 0; i < 7; i++)
 				{
 					days[i].panCase.Clear();
+					for (int j = days[i].panDay.Controls.Count - 1; 1 < j; j--)
+						days[i].panDay.Controls.RemoveAt(j);
 				}
+				// Изменяем значение переменной в нужную сторону
+				ddd -= 7;
+				// Переходим к прошлому месяцу
+				if (ddd <= 0)
+				{
+					mmm--;
+					ddd = year[1].listMonth[mmm - 1].listDay.Count() + ddd;
+				}
+				// Определяем номер дня недели
+				int dnw = dayWeek[new DateTime(year[1].yearInt, mmm, ddd).DayOfWeek.ToString()];
 				
-				DrawWeek(17, 4, 6, false);
+				labBackward.Text = mmm + " <<<";	// *** (не нужно) ***
+				
+				DrawWeek(ddd, mmm, dnw, false);
 			}
 		}
 		// Событие нажатия на кнопку "Вперед"
@@ -61,11 +79,27 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				for(int i = 0; i < 7; i++)
+				// Очищаем контролы панели  и коллекцию задач
+				for (int i = 0; i < 7; i++)
 				{
 					days[i].panCase.Clear();
+					for (int j = days[i].panDay.Controls.Count - 1; 1 < j; j--)
+						days[i].panDay.Controls.RemoveAt(j);
 				}
-				DrawWeek(3, 6, 4, false);
+				// Изменяем значение переменной в нужную сторону
+				ddd += 7;
+				// Переходим к прошлому месяцу
+				if (year[1].listMonth[mmm - 1].listDay.Count() < ddd)
+				{
+					ddd = ddd - year[1].listMonth[mmm - 1].listDay.Count();
+					mmm++;
+				}
+				// Определяем номер дня недели
+				int dnw = dayWeek[new DateTime(year[1].yearInt, mmm, ddd).DayOfWeek.ToString()];
+				
+				labForward.Text = ">>> " + mmm;		// *** (не нужно) ***
+				
+				DrawWeek(ddd, mmm, dnw, false);
 			}
 		}
 		// Событие нажатия на кнопку "Выйти"
@@ -73,11 +107,11 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
+				// Здесь будет проверка на правельность введеннх данных
 				panRegMain.Visible = true;
 				panWeekMain.Visible = false;
 			}
 		}
-		
 		// Событие наведения на кнопки "Назад" и "Вперед"
 		internal void MouseEnter_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(113, 228, 156); }
 		internal void MouseLeave_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(133, 238, 176); }

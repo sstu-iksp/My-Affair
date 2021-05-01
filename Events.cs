@@ -11,26 +11,25 @@ using System.Runtime.InteropServices;
 namespace Construct
 {
 	// Здесь хранятся события, отвечающие за анимацию и ответ на действия пользователя 		*В РАЗРАБОТКЕ*
-	
 	partial class MainForm
 	{
 		// Переменная для проверки активности панели
-		static bool act;
+		internal static bool act;
 		// Перемнная для определения режима заполнения задачи
-		static bool compl;
+		internal static bool compl;
 		// Переменная для запоминания активной панели
-		static Panel actP;
-		static Panel actP2;
+		internal static Panel actP;
+		internal static Panel actP2;
 		// Переменная для запоминания номера начального дня
-		static int beginDay;
+		internal static int beginDay;
 		// Переменная для запоминания номера начальной задачи
-		static int beginCase;
+		internal static int beginCase;
 		// Переменные для запоминания начальных координат панели (для теста)
-		static int actX;
-		static int actY;
+		internal static int actX;
+		internal static int actY;
 		// Переменные для запоминания начальных координат на панели
-		static int startX;
-		static int startY;
+		internal static int startX;
+		internal static int startY;
 		// Событие зажатия кнопки мыши на панели, отвечает за присвоение к активной панели, которая используется далее
 		internal static void MouseDown_Case(object sender, MouseEventArgs e)
 		{
@@ -52,7 +51,7 @@ namespace Construct
 				// Добавляем задачу на форму, для возможности перемещения вне начального дня
 				form.Controls.Add(actP);
 				// Сортируем список задач
-				days[beginDay].panCaseRedraw();
+				days[beginDay].PanCaseRedraw();
 				// Запоминаем начальные координаты задачи (на данный момент не используются)
 				actX = actP.Left;
 				actY = actP.Top;
@@ -121,9 +120,9 @@ namespace Construct
 						cancel = false;
 						// Перерисовываем измененный список задач
 						days[i].posLab = 0;
-						days[i].panCaseRedraw();
+						days[i].PanCaseRedraw();
 						// Перерисовываем список задач начального дня
-						days[beginDay].panCaseRedraw();		// ***
+						days[beginDay].PanCaseRedraw();		// ***
 						break;
 					}
 					if ((actP.Top + actP.Height/2 < days[i].panDay.Top) || true)	// 'Пуф'	!!! true в проверке !!!
@@ -132,7 +131,7 @@ namespace Construct
 						days[beginDay].panCase.Remove(actP);
 						days[beginDay].posBot -= actP.Height + 3;
 						cancel = false;
-						days[beginDay].panCaseRedraw();		// ***
+						days[beginDay].PanCaseRedraw();		// ***
 					}
 				}
 				// Возвращаем задачу задачу обратно на начальный день если она не была перемещена	(выключено)
@@ -202,7 +201,7 @@ namespace Construct
 					// Сортировка всего ???
 					if (b != i)
 						days[i].posLab = 0;
-					days[i].panCaseRedraw();		// ***
+					days[i].PanCaseRedraw();		// ***
 				}
 			}
 		}
