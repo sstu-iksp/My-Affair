@@ -13,6 +13,8 @@ namespace Construct
 	// Здесь хранятся методы, которые выводят что-либо на экран 		*В РАЗРАБОТКЕ*
 	partial class MainForm
 	{
+		// Лейбл "Календарь"
+		internal static Label labCalendar = Core.CreateLab(panWeekMain, 15, 7, 175, 35, 10);
 		// Лейбл "Назад"
 		internal static Label labBackward = Core.CreateLab(panWeekMain, 15, panWeekMain.Height - 60, 355, 50, 18);
 		// Лейбл "Вперед"
@@ -24,6 +26,11 @@ namespace Construct
 		// Отображение различных элементов
 		internal void InitializeElements()
 		{
+			labCalendar.Text = "Календарь";
+			labCalendar.BackColor = Color.FromArgb(150, 35, 255);
+			labCalendar.MouseClick += (MouseClick_labCalendar);
+			labCalendar.MouseEnter += (MouseEnter_labCalendar);
+			labCalendar.MouseLeave += (MouseLeave_labCalendar);
 			labBackward.Text = "<<<";
 			labBackward.BackColor = Color.FromArgb(133, 238, 176);
 			labBackward.MouseClick += (MouseClick_labBackard);
@@ -43,9 +50,15 @@ namespace Construct
 			labExit.MouseEnter += (MouseEnter_labExit);
 			labExit.MouseLeave += (MouseLeave_labExit);
 		}
+		// Событие нажатия на кнопку "Календарь"
+		internal void MouseClick_labCalendar(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)			panCalendar.Visible = true;
+			else if (e.Button == MouseButtons.Right)	panCalendar.Visible = false;
+		}
 		// Переменные для запоминания текущего дня и месяца
-		int ddd;
-		int mmm;
+		internal int ddd;
+		internal int mmm;
 		// Событие нажатия на кнопку "Назад"
 		internal void MouseClick_labBackard(object sender, MouseEventArgs e)
 		{
@@ -112,12 +125,31 @@ namespace Construct
 				panWeekMain.Visible = false;
 			}
 		}
+		// Событие наведения на кнопку "Календарь"
+		internal void MouseEnter_labCalendar(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(180, 35, 225); }
+		internal void MouseLeave_labCalendar(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(150, 35, 255); }
 		// Событие наведения на кнопки "Назад" и "Вперед"
 		internal void MouseEnter_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(113, 228, 156); }
 		internal void MouseLeave_labBF(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(133, 238, 176); }
 		// Событие наведения на кнопку "Выйти"
 		internal void MouseEnter_labExit(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 208); }
 		internal void MouseLeave_labExit(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 202, 228); }
+		
+		/*														Рамки
+		 
+		internal List<Label> kek = new List<Label>();
+		
+		//												   		  +
+		
+		for (int i = 0, j = 0; i < 42; i++)
+		{
+			if (i % 7 == 0 && i != 0)	j++;
+			kek.Add(Core.CreateLab(panRegMain, 49 + i * 55 - j * 385, 49 + j * 55, 52, 52, 18));
+			kek[i].BackColor = Color.FromArgb(0, 0, 0);
+			kek[i].SendToBack();
+		}
+		
+		*/
 	}
 }
 

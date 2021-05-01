@@ -28,7 +28,6 @@ namespace Construct
 		internal TextBox boxRegPar = Core.CreateBox(panReg, 5, 225, 165, 20, 12);
 		// Кнопка "Войти"
 		internal Label labRegEnter = Core.CreateLab(panReg, 355, 375, 120, 40, 12);
-		
 		// Метод для инициализаии регистрации
 		internal void InitializeReg()
 		{
@@ -40,7 +39,7 @@ namespace Construct
 			panWeekMain.Visible = false;
 							
 			panReg.BackColor = Color.FromArgb(129, 212, 238);
-		//	panReg.Visible = true;
+			panReg.Visible = true;
 			
 			labReg.BackColor = Color.FromArgb(129, 212, 238);
 			labReg.Text = "Добро пожаловать";
@@ -56,8 +55,6 @@ namespace Construct
 			labRegEnter.MouseClick += (MouseClick_labRegEnter);
 			labRegEnter.MouseEnter += (MouseEnter_labRegEnter);
 			labRegEnter.MouseLeave += (MouseLeave_labRegEnter);
-			
-			InitializeCalendarView();	// *******
 		}
 		
 		// Событие кнопки "Войти", которое должно проверять введенные поля и сверять данные с базой данных	*В РАЗРАБОТКЕ*

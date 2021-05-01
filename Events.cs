@@ -46,6 +46,8 @@ namespace Construct
 				else if ((sender as Label) != null)	actP = (Panel)(sender as Label).Parent;
 				// Запоминаем номер начального дня
 				beginDay = actP.Parent.TabIndex;
+				// Удаляем задачу из класса календаря
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases.RemoveAt(days[beginDay].panCase.IndexOf(actP));		// <<< ###
 				// Удаляем элемент из начальной колекции
 				days[beginDay].panCase.Remove(actP);
 				// Добавляем задачу на форму, для возможности перемещения вне начального дня
@@ -57,7 +59,7 @@ namespace Construct
 				actY = actP.Top;
 				// Переносим на передний план
 				actP.BringToFront();
-				// Показываем что панель активна
+				// Показываем, что панель активна
 				act = true;
 			}
 			if (e.Button == MouseButtons.Right && !compl && !act)
@@ -79,20 +81,29 @@ namespace Construct
 		// Событие срабатывающие во время отпускания кнопки, отвечает за конечное расположение панели
 		internal static void MouseUp_Case(object sender, MouseEventArgs e)
 		{
-			bool cancel = true;
-			bool b = true;
-			
 			if (e.Button == MouseButtons.Left && act)
 			{
+				bool cancel = true;
+				bool b = true;
+				// Переменные для записи значений
+				string name = "";
+				string time = "";
+				string desc = "";
+				// Сначала считываем то, что записанно в лейблах путем перебора всех контролов на панели
+				foreach (Control ctrl in actP.Controls)
+				{
+					if (ctrl.TabIndex == 0)			name = ctrl.Text;
+					else if (ctrl.TabIndex == 1)	time = ctrl.Text;
+					else if (ctrl.TabIndex == 2)	desc = ctrl.Text;
+				}
 				// После отпускания кнопки мыши проверяем местоположение панели относительно дней
 				for (int i = 0; i < 7; i++)
 				{
 					if ((actP.Left + actP.Width/2 > days[i].panDay.Left) && (actP.Left + actP.Width/2 < days[i].panDay.Left + days[i].panDay.Width)
 					   && (actP.Top + actP.Height/2 > days[i].panDay.Top) && (actP.Top + actP.Height/2 < days[i].panDay.Top + days[i].panDay.Height))
 					{
-						// Удаляем задачу из колекции начального дня
+						// Удаляем задачу с формы
 						form.Controls.Remove(actP);
-						days[beginDay].panCase.Remove(actP);
 						// Добавляем задачу в нужный день
 						days[i].panDay.Controls.Add(actP);
 						
@@ -102,6 +113,7 @@ namespace Construct
 							{
 								// Добавляем на нужную панельку, отображаем и меняем высоту
 								days[i].panCase.Insert(j, actP);
+								year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Insert(j, new Сalendar.Case(name, time, desc));		// <<< ###
 								actP.Left = 3;
 								actP.Top = labVoid.Top;
 								b = false;
@@ -111,6 +123,7 @@ namespace Construct
 						if (b)
 						{
 							days[i].panCase.Insert(days[i].panCase.Count(), actP);
+							year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Add(new Сalendar.Case(name, time, desc));		// <<< ###
 							actP.Left = 3;
 							actP.Top = days[i].posBot;
 						}
@@ -207,14 +220,13 @@ namespace Construct
 		}
 		// Метод для закрытия режима редактирования задачи
 		internal static void MouseClick_Outside(object sender, MouseEventArgs e)
-		{
-			// Переменные для записи значений
-			string name = "";
-			string time = "";
-			string desc = "";
-			
+		{			
 			if (e.Button == MouseButtons.Left && compl)
 			{
+				// Переменные для записи значений
+				string name = "";
+				string time = "";
+				string desc = "";
 				// Сначала считываем то, что записанно в Текстбоксах путем перебора всех контролов на панели
 				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
 				{
@@ -232,6 +244,10 @@ namespace Construct
 				// Далее меняем местами Лейблы с Текстбоксами
 				foreach (Control ctrl in actP2.Controls)
 					if ((ctrl as Label) != null) ctrl.BringToFront();
+				// Меняем значения в классе календаря
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].nameCase = name;		// <<< ###
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].lastTime = time;
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].description = desc;
 				compl = false;
 			}
 		}

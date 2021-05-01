@@ -50,6 +50,8 @@ namespace Construct
 			InitializeReg();
 			// Ввод различных элементов
 			InitializeElements();
+			// Инициализация календаря
+			InitializeCalendarView();
 			// Событие для выхода из режима заполнения задачи
 			panWeekMain.MouseClick += (MouseClick_Outside);
 		}
@@ -114,16 +116,19 @@ namespace Construct
 					numYear = 2;
 					numDay = i - dayBegin - 2;
 				}
-				
-				days.Add(new Day(wn[i] + " - " + (numDay + 1), Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 600)));	// Переход с месяцем !!!
+				// Создаем панели дней
+				days.Add(new Day(wn[i] + " - " + (numDay + 1), Core.CreatePan(panWeekMain, 15 + i * 180, 50, 175, 600)));
 				days[i].panDay.TabIndex = i;
-				
+				days[i].date = new DateTime(year[numYear].yearInt, DateTime.Now.Month - mon + 1, numDay + 1);
 				// Заполняем дни недели на экране задачами из классов
-				foreach (Сalendar.Case cs in year[numYear].listMonth[DateTime.Now.Month - mon].listDay[numDay].cases)	// С месяцем проблеммы тоже !!!
+				foreach (Сalendar.Case cs in year[numYear].listMonth[DateTime.Now.Month - mon].listDay[numDay].cases)
 				{
 					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description));
 					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
 				}
+				// Выделяем текущий день
+				if (days[i].date.Year == DateTime.Now.Year && days[i].date.Month == DateTime.Now.Month && days[i].date.Day == DateTime.Now.Day)
+					days[i].labDay.BackColor = Color.FromArgb(115, 160, 250);
 			}
 			// Пустой лейбл
 			labVoid = Core.CreateLab(days[0].panDay, 3, 28, 170, 30, 10);
@@ -139,6 +144,8 @@ namespace Construct
 			
 			for(int i = 0; i < 7; i++)																// Нижний код в какой нибуть метод лучше
 			{
+				// Сбрасываем цвет текущего дня
+				days[i].labDay.BackColor = Color.FromArgb(129, 222, 238);
 				int numYear = 1;
 				int numDay = dayNow - dayBegin + i;
 				int mon = 1;
@@ -167,35 +174,37 @@ namespace Construct
 					numYear = 2;
 					numDay = i - dayBegin - 2;
 				}
-				
 				// Меняем номер дня
 				days[i].labDay.Text = wn[i] + " - " + (numDay + 1);
-				
+				days[i].date = new DateTime(year[numYear].yearInt, monthNow - mon + 1, numDay + 1);
 				// Заполняем дни недели на экране задачами из классов
 				foreach (Сalendar.Case cs in year[numYear].listMonth[monthNow - mon].listDay[numDay].cases)	// С месяцем проблеммы тоже !!!
 				{
 					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description));
 					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
 				}
+				// Выделяем текущий день
+				if (days[i].date.Year == DateTime.Now.Year && days[i].date.Month == DateTime.Now.Month && days[i].date.Day == DateTime.Now.Day)
+					days[i].labDay.BackColor = Color.FromArgb(115, 160, 250);
+				
 				days[i].PanCaseRedraw();
 			}
 		}
 		
-		
-		// 	*******************************************************************************************************************************
-		
-		
+		// Панель календаря
+		internal static Panel panCalendar = Core.CreatePan(panWeekMain, 150, 150, 600, 400);
 		// Коллекции лейблов для календаря
 		internal List<Label> viewMonths = new List<Label>();
 		internal List<Label> viewDays = new List<Label>();
 		// Вывод календаря
 		internal void InitializeCalendarView()
 		{
+			panCalendar.BackColor = Color.FromArgb(0, 180, 140);
 			// Отображаем месяца
 			for (int i = 0, j = 0; i < 12; i++)
 			{
 				if (i % 4 == 0 && i != 0)	j++;
-				viewMonths.Add(Core.CreateLab(panRegMain, 100 + i * 55 - j * 220, 100 + j * 55, 50, 50, 18));	// Panel другая !!!
+				viewMonths.Add(Core.CreateLab(panCalendar, 100 + i * 55 - j * 220, 100 + j * 55, 50, 50, 18));	// Panel другая !!!
 				viewMonths[i].BackColor = Color.FromArgb(88, 123, 224);
 				viewMonths[i].Text = (i + 1) + "";
 				viewMonths[i].Name = "apex" + i;
@@ -211,7 +220,7 @@ namespace Construct
 			for (int i = 0, j = 0; i < 42; i++)
 			{
 				if (i % 7 == 0 && i != 0)	j++;
-				viewDays.Add(Core.CreateLab(panRegMain, 50 + i * 55 - j * 385, 50 + j * 55, 50, 50, 18));	// Panel другая !!!
+				viewDays.Add(Core.CreateLab(panCalendar, 50 + i * 55 - j * 385, 50 + j * 55, 50, 50, 18));	// Panel другая !!!
 			}
 			// Переменная для определения первого дня недели
 			int dayBegin = dayWeek[DateTime.Now.DayOfWeek.ToString()];
@@ -241,29 +250,31 @@ namespace Construct
 				}
 			}
 			// Дни следующего месяца
-			for (int i = year[1].listMonth[DateTime.Now.Month].listDay.Count() + dayBegin - 1; i < 42; i++)
+			for (int i = year[1].listMonth[DateTime.Now.Month - 1].listDay.Count() + dayBegin; i < 42; i++)
 			{
 				viewDays[i].Name = (sender as Label).Text;
-				viewDays[i].Text = (i - year[1].listMonth[DateTime.Now.Month].listDay.Count() - dayBegin + 2) + "";
+				viewDays[i].Text = (i - year[1].listMonth[DateTime.Now.Month - 1].listDay.Count() - dayBegin + 1) + "";
 				viewDays[i].BackColor = Color.FromArgb(100, 100, 100);
 				viewDays[i].MouseClick -= (ButtonClickPrintWeeek);
 				viewDays[i].MouseEnter -= (MouseEnter_viewDays);
 				viewDays[i].MouseLeave -= (MouseLeave_viewDays);
 			}
 			// Серьезно ???
-			foreach (Label element in viewMonths)
-				element.Visible = false;
+			foreach (Label lab in viewMonths)
+				lab.Visible = false;
 		}
 		// ага
 		internal void ButtonClickPrintWeeek(object sender, MouseEventArgs e)
 		{
+			/*
 			panWeekMain.Visible = true;
 			panRegMain.Visible = false;
-			
+			*/
 			dlaNikitki(int.Parse((sender as Label).Text), int.Parse((sender as Label).Name));
 		}
 		// ъуъ
 		internal void dlaNikitki(int day, int month) { }
+		
 		// Событие наведения на месяца
 		internal static void MouseEnter_viewMonths(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(84, 168, 247); }
 		internal static void MouseLeave_viewMonths(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(88, 123, 224); }

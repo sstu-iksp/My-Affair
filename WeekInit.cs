@@ -15,6 +15,8 @@ namespace Construct
 		// Класс отвечающий за ввод дней недели на экран
 		internal class Day											// 		*В РАЗРАБОТКЕ*
 		{
+			// Переменная для запоминания даты
+			internal DateTime date;
 			// Координаты для прокрутки задач
 			internal int posTop;
 			internal int posBot;
@@ -77,7 +79,7 @@ namespace Construct
 				{
 					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
 					CaseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
-					year[1].listMonth[0].listDay[0].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));
+					year[1].listMonth[date.Month - 1].listDay[date.Day - 1].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));		// <<< ###
 					// ***
 					labAddCase.Text = panCase.Count() + " ";				// -------------------------------------------------- DEBAG
 					// ***
@@ -85,13 +87,13 @@ namespace Construct
 			}
 			// Временный метод позволяющий копировать задачу, а точнее создать пустую
 			internal Panel Copy_Case(Panel pan, int x, int y, string name, string time, string desc)
-			{				
+			{
 				Panel p = Core.CreatePan(pan, x, y, 170, 100);
-				
+				// Лейблы названия, времени и описания задачи
 				Label labCaseNameT = Core.CreateLab(p, 5, 5, 105, 20, 11);
 				Label labCaseTimeT = Core.CreateLab(p, 110, 5, 55, 20, 11);
 				Label labCaseDescT = Core.CreateLab(p, 5, 26, 160, 70, 9);
-				
+				// Текстбокс для редактирования названия, времени и описания задачи
 				TextBox boxCaseNameT = Core.CreateBox(p, 5, 5, 105, 20, 10, true);
 			//	TextBox boxCaseTimeT = Core.CreateBox(p, 110, 5, 55, 20, 11, true);
 				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 110, 5, 55, 20, 8, true);	// Проблемы с размерами (Высота зависит от шрифта)
