@@ -75,7 +75,7 @@ namespace Construct
 			// Событие нажатия на кнопку "Добавить (+)"
 			internal void MouseClick_labAddCase(object sender, MouseEventArgs e)
 			{
-				if (e.Button == MouseButtons.Left)
+				if (e.Button == MouseButtons.Left && !compl)
 				{
 					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
 					CaseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
@@ -182,7 +182,7 @@ namespace Construct
 			internal void MouseWheel_Case(object sender, MouseEventArgs e)
 			{
 				// '20' - скорость прокрутки, чем больше значение тем медленнее скорость
-				if (panCase.LastOrDefault() != null)
+				if (panCase.LastOrDefault() != null && !compl)
 				{
 					// Переменная для подсчета места занимаемого задачами
 					int casesH = labDay.Height + labAddCase.Height;

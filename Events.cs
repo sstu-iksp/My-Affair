@@ -74,6 +74,11 @@ namespace Construct
 				// Запоминаем индексы панелей дня и задачи для дальнейшей возможности к ним обратиться
 				beginDay = actP2.Parent.TabIndex;
 				beginCase = days[beginDay].panCase.IndexOf(actP2);
+				// Отображаем кнопки
+				if(beginDay != 6)
+					caseViewBut(actP2.Parent.Left, actP2.Parent.Top + actP2.Top, actP2.Parent.Width);
+				else
+					caseViewBut(actP2.Parent.Left - labCase1.Width - 10, actP2.Parent.Top + actP2.Top, 0);
 				// Объявляем о том, что происходит редактирование задачи
 				compl = true;
 			}
@@ -248,6 +253,13 @@ namespace Construct
 				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].nameCase = name;		// <<< ###
 				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].lastTime = time;
 				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].description = desc;
+				
+				// Скрыаем кнопки задачи
+				labCase1.Visible = false;
+				labCase2.Visible = false;
+				labCase3.Visible = false;
+				labCase4.Visible = false;
+				labCase5.Visible = false;
 				compl = false;
 			}
 		}
