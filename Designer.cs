@@ -316,7 +316,7 @@ namespace Construct
 
 			DlaNikitki(int.Parse((sender as Label).Text), (sender as Label).Name);
 		}
-		// ъуъ
+		// Для Никиты на будущее
 
 		private void DlaNikitki(int day, string month)
 		{
