@@ -11,26 +11,25 @@ using System.Runtime.InteropServices;
 namespace Construct
 {
 	// Здесь хранятся события, отвечающие за анимацию и ответ на действия пользователя 		*В РАЗРАБОТКЕ*
-	
 	partial class MainForm
 	{
 		// Переменная для проверки активности панели
-		static bool act;
+		internal static bool act;
 		// Перемнная для определения режима заполнения задачи
-		static bool compl;
+		internal static bool compl;
 		// Переменная для запоминания активной панели
-		static Panel actP;
-		static Panel actP2;
+		internal static Panel actP;
+		internal static Panel actP2;
 		// Переменная для запоминания номера начального дня
-		static int beginDay;
+		internal static int beginDay;
 		// Переменная для запоминания номера начальной задачи
-		static int beginCase;
+		internal static int beginCase;
 		// Переменные для запоминания начальных координат панели (для теста)
-		static int actX;
-		static int actY;
+		internal static int actX;
+		internal static int actY;
 		// Переменные для запоминания начальных координат на панели
-		static int startX;
-		static int startY;
+		internal static int startX;
+		internal static int startY;
 		// Событие зажатия кнопки мыши на панели, отвечает за присвоение к активной панели, которая используется далее
 		internal static void MouseDown_Case(object sender, MouseEventArgs e)
 		{
@@ -47,18 +46,20 @@ namespace Construct
 				else if ((sender as Label) != null)	actP = (Panel)(sender as Label).Parent;
 				// Запоминаем номер начального дня
 				beginDay = actP.Parent.TabIndex;
+				// Удаляем задачу из класса календаря
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases.RemoveAt(days[beginDay].panCase.IndexOf(actP));		// <<< ###
 				// Удаляем элемент из начальной колекции
 				days[beginDay].panCase.Remove(actP);
 				// Добавляем задачу на форму, для возможности перемещения вне начального дня
 				form.Controls.Add(actP);
 				// Сортируем список задач
-				days[beginDay].panCaseRedraw();
+				days[beginDay].PanCaseRedraw();
 				// Запоминаем начальные координаты задачи (на данный момент не используются)
 				actX = actP.Left;
 				actY = actP.Top;
 				// Переносим на передний план
 				actP.BringToFront();
-				// Показываем что панель активна
+				// Показываем, что панель активна
 				act = true;
 			}
 			if (e.Button == MouseButtons.Right && !compl && !act)
@@ -73,6 +74,11 @@ namespace Construct
 				// Запоминаем индексы панелей дня и задачи для дальнейшей возможности к ним обратиться
 				beginDay = actP2.Parent.TabIndex;
 				beginCase = days[beginDay].panCase.IndexOf(actP2);
+				// Отображаем кнопки
+				if(beginDay != 6)
+					caseViewBut(actP2.Parent.Left, actP2.Parent.Top + actP2.Top, actP2.Parent.Width);
+				else
+					caseViewBut(actP2.Parent.Left - labCase1.Width - 10, actP2.Parent.Top + actP2.Top, 0);
 				// Объявляем о том, что происходит редактирование задачи
 				compl = true;
 			}
@@ -80,20 +86,29 @@ namespace Construct
 		// Событие срабатывающие во время отпускания кнопки, отвечает за конечное расположение панели
 		internal static void MouseUp_Case(object sender, MouseEventArgs e)
 		{
-			bool cancel = true;
-			bool b = true;
-			
 			if (e.Button == MouseButtons.Left && act)
 			{
+				bool cancel = true;
+				bool b = true;
+				// Переменные для записи значений
+				string name = "";
+				string time = "";
+				string desc = "";
+				// Сначала считываем то, что записанно в лейблах путем перебора всех контролов на панели
+				foreach (Control ctrl in actP.Controls)
+				{
+					if (ctrl.TabIndex == 0)			name = ctrl.Text;
+					else if (ctrl.TabIndex == 1)	time = ctrl.Text;
+					else if (ctrl.TabIndex == 2)	desc = ctrl.Text;
+				}
 				// После отпускания кнопки мыши проверяем местоположение панели относительно дней
 				for (int i = 0; i < 7; i++)
 				{
 					if ((actP.Left + actP.Width/2 > days[i].panDay.Left) && (actP.Left + actP.Width/2 < days[i].panDay.Left + days[i].panDay.Width)
 					   && (actP.Top + actP.Height/2 > days[i].panDay.Top) && (actP.Top + actP.Height/2 < days[i].panDay.Top + days[i].panDay.Height))
 					{
-						// Удаляем задачу из колекции начального дня
+						// Удаляем задачу с формы
 						form.Controls.Remove(actP);
-						days[beginDay].panCase.Remove(actP);
 						// Добавляем задачу в нужный день
 						days[i].panDay.Controls.Add(actP);
 						
@@ -103,6 +118,7 @@ namespace Construct
 							{
 								// Добавляем на нужную панельку, отображаем и меняем высоту
 								days[i].panCase.Insert(j, actP);
+								year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Insert(j, new Сalendar.Case(name, time, desc));		// <<< ###
 								actP.Left = 3;
 								actP.Top = labVoid.Top;
 								b = false;
@@ -112,6 +128,7 @@ namespace Construct
 						if (b)
 						{
 							days[i].panCase.Insert(days[i].panCase.Count(), actP);
+							year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Add(new Сalendar.Case(name, time, desc));		// <<< ###
 							actP.Left = 3;
 							actP.Top = days[i].posBot;
 						}
@@ -121,9 +138,9 @@ namespace Construct
 						cancel = false;
 						// Перерисовываем измененный список задач
 						days[i].posLab = 0;
-						days[i].panCaseRedraw();
+						days[i].PanCaseRedraw();
 						// Перерисовываем список задач начального дня
-						days[beginDay].panCaseRedraw();		// ***
+						days[beginDay].PanCaseRedraw();		// ***
 						break;
 					}
 					if ((actP.Top + actP.Height/2 < days[i].panDay.Top) || true)	// 'Пуф'	!!! true в проверке !!!
@@ -132,7 +149,7 @@ namespace Construct
 						days[beginDay].panCase.Remove(actP);
 						days[beginDay].posBot -= actP.Height + 3;
 						cancel = false;
-						days[beginDay].panCaseRedraw();		// ***
+						days[beginDay].PanCaseRedraw();		// ***
 					}
 				}
 				// Возвращаем задачу задачу обратно на начальный день если она не была перемещена	(выключено)
@@ -202,20 +219,19 @@ namespace Construct
 					// Сортировка всего ???
 					if (b != i)
 						days[i].posLab = 0;
-					days[i].panCaseRedraw();		// ***
+					days[i].PanCaseRedraw();		// ***
 				}
 			}
 		}
 		// Метод для закрытия режима редактирования задачи
 		internal static void MouseClick_Outside(object sender, MouseEventArgs e)
-		{
-			// Переменные для записи значений
-			string name = "";
-			string time = "";
-			string desc = "";
-			
+		{			
 			if (e.Button == MouseButtons.Left && compl)
 			{
+				// Переменные для записи значений
+				string name = "";
+				string time = "";
+				string desc = "";
 				// Сначала считываем то, что записанно в Текстбоксах путем перебора всех контролов на панели
 				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
 				{
@@ -233,12 +249,23 @@ namespace Construct
 				// Далее меняем местами Лейблы с Текстбоксами
 				foreach (Control ctrl in actP2.Controls)
 					if ((ctrl as Label) != null) ctrl.BringToFront();
+				// Меняем значения в классе календаря
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].nameCase = name;		// <<< ###
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].lastTime = time;
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].description = desc;
+				
+				// Скрыаем кнопки задачи
+				labCase1.Visible = false;
+				labCase2.Visible = false;
+				labCase3.Visible = false;
+				labCase4.Visible = false;
+				labCase5.Visible = false;
 				compl = false;
 			}
 		}
 		// Событие наведения на кнопку добавления новой задачи
-		internal void MouseEnter_labAddCase(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 208); }
-		internal void MouseLeave_labAddCase(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 228); }
+		internal static void MouseEnter_labAddCase(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 208); }
+		internal static void MouseLeave_labAddCase(object sender, EventArgs e) { (sender as Label).BackColor = Color.FromArgb(129, 212, 228); }
 	}
 }
 

@@ -10,8 +10,10 @@ using System.Runtime.InteropServices;
 
 namespace Construct
 {
-	static class Core					// Методы для создания разных объектов Control
+	// Методы для создания разных объектов Control
+	static class Core					
 	{
+		// Создание формы
 		internal static Form CreateWindow(Form form, int left, int top, int width, int height, string caption)
 		{
 			form.Left = left;
@@ -21,7 +23,21 @@ namespace Construct
 			
 			return form;
 		}
-		
+		// Создание панели
+		internal static Panel CreatePan(int left, int top, int width, int height)
+		{
+			Panel pan = new Panel();
+			pan.Left = left;
+			pan.Top = top;
+			pan.Width = width;
+			pan.Height = height;
+			pan.BackgroundImageLayout = ImageLayout.Stretch;
+			
+			pan.Visible = false;
+			
+			return pan;
+		}
+		// Создание панели привязанной к другой панели
 		internal static Panel CreatePan(Panel panel, int left, int top, int width, int height)
 		{
 			Panel pan = new Panel();
@@ -38,21 +54,21 @@ namespace Construct
 			panel.Controls.Add(pan);
 			return pan;
 		}
-		
-		internal static Panel CreatePan(int left, int top, int width, int height)
+		// Создание PictureBox
+		internal static PictureBox CreatePB(Panel pan, int left, int top, int width, int height)
 		{
-			Panel pan = new Panel();
-			pan.Left = left;
-			pan.Top = top;
-			pan.Width = width;
-			pan.Height = height;
-			pan.BackgroundImageLayout = ImageLayout.Stretch;
+			PictureBox pb = new PictureBox();
 			
-			pan.Visible = false;
+			pb.Left = left;
+			pb.Top = top;
+			pb.Width = width;
+			pb.Height = height;
+			pb.SizeMode = PictureBoxSizeMode.StretchImage;
 			
-			return pan;
+			pan.Controls.Add(pb);
+			return pb;
 		}
-		
+		// Создание PictureBox с прозрачным фоном
 		internal static PictureBox CreatePB(Panel pan, int left, int top, int width, int height, bool b)
 		{
 			PictureBox pb = new PictureBox();
@@ -67,21 +83,7 @@ namespace Construct
 			pan.Controls.Add(pb);
 			return pb;
 		}
-		
-		internal static PictureBox CreatePB(Panel pan, int left, int top, int width, int height)
-		{
-			PictureBox pb = new PictureBox();
-			
-			pb.Left = left;
-			pb.Top = top;
-			pb.Width = width;
-			pb.Height = height;
-			pb.SizeMode = PictureBoxSizeMode.StretchImage;
-			
-			pan.Controls.Add(pb);
-			return pb;
-		}
-		
+		// Созжание лейбла
 		internal static Label CreateLab(Panel pan, int left, int top, int width, int height, float f)
 		{
 			Label lab = new Label();
@@ -97,7 +99,7 @@ namespace Construct
 			pan.Controls.Add(lab);
 			return lab;
 		}
-		
+		// Создание лейбла с прозрачным фоном
 		internal static Label CreateLab(Panel pan, int left, int top, int width, int height, bool b, float f)
 		{
 			Label lab = new Label();
@@ -115,7 +117,7 @@ namespace Construct
 			pan.Controls.Add(lab);			
 			return lab;
 		}
-		
+		// Создание текстбокса
 		internal static TextBox CreateBox(Panel pan, int left, int top, int width, int height, float f)
 		{
 			TextBox box = new TextBox();
@@ -130,7 +132,7 @@ namespace Construct
 			pan.Controls.Add(box);			
 			return box;
 		}
-		// Текстовое поле в несколько строк (можно изменять высоту поля)
+		// Создание текстбокса в несколько строк
 		internal static TextBox CreateBox(Panel pan, int left, int top, int width, int height, float f, bool mult)
 		{
 			TextBox box = new TextBox();
@@ -146,7 +148,7 @@ namespace Construct
 			pan.Controls.Add(box);			
 			return box;
 		}
-		// Текстовое поле, которое позваляет задать формат ввода (маску)
+		// Создание маскедтекстбокса , который позволяет задать формат ввода (маску)
 		internal static MaskedTextBox CreateMasBox(Panel pan, int left, int top, int width, int height, float f, bool mult)
 		{
 			MaskedTextBox box = new MaskedTextBox();
@@ -161,6 +163,12 @@ namespace Construct
 			
 			pan.Controls.Add(box);			
 			return box;
+		}
+		// Метод скрывающий или показывающий элементы коллекции
+		internal static void VisibleList(List<Label> list, bool b)
+		{
+			foreach (Label element in list)
+				element.Visible = b;
 		}
 	}	
 }
