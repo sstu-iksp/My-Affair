@@ -164,6 +164,12 @@ namespace Construct
 			pan.Controls.Add(box);			
 			return box;
 		}
+		// Метод скрывающий или показывающий элементы коллекции
+		internal static void VisibleList(List<Label> list, bool b)
+		{
+			foreach (Label element in list)
+				element.Visible = b;
+		}
 	}	
 }
 
