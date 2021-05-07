@@ -164,13 +164,6 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left && !compl)
 			{
-				// Очищаем контролы панели  и коллекцию задач
-				for (int i = 0; i < 7; i++)
-				{
-					days[i].panCase.Clear();
-					for (int j = days[i].panDay.Controls.Count - 1; 1 < j; j--)
-						days[i].panDay.Controls.RemoveAt(j);
-				}
 				// Изменяем значение переменной в нужную сторону
 				ddd -= 7;
 				// Переходим к прошлому месяцу
@@ -179,12 +172,10 @@ namespace Construct
 					mmm--;
 					ddd = year[1].listMonth[mmm - 1].listDay.Count() + ddd;
 				}
-				// Определяем номер дня недели
-				int dnw = dayWeek[new DateTime(year[1].yearInt, mmm, ddd).DayOfWeek.ToString()];
 				
 				labBackward.Text = mmm + " <<<";	// *** (не нужно) ***
 				
-				DrawWeek(ddd, mmm, dnw, false);
+				DrawWeek(ddd, mmm, false);
 			}
 		}
 		// Событие нажатия на кнопку "Вперед"
@@ -192,13 +183,6 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left && !compl)
 			{
-				// Очищаем контролы панели  и коллекцию задач
-				for (int i = 0; i < 7; i++)
-				{
-					days[i].panCase.Clear();
-					for (int j = days[i].panDay.Controls.Count - 1; 1 < j; j--)
-						days[i].panDay.Controls.RemoveAt(j);
-				}
 				// Изменяем значение переменной в нужную сторону
 				ddd += 7;
 				// Переходим к прошлому месяцу
@@ -207,12 +191,10 @@ namespace Construct
 					ddd = ddd - year[1].listMonth[mmm - 1].listDay.Count();
 					mmm++;
 				}
-				// Определяем номер дня недели
-				int dnw = dayWeek[new DateTime(year[1].yearInt, mmm, ddd).DayOfWeek.ToString()];
 				
 				labForward.Text = ">>> " + mmm;		// *** (не нужно) ***
 				
-				DrawWeek(ddd, mmm, dnw, false);
+				DrawWeek(ddd, mmm, false);
 			}
 		}
 		// Событие нажатия на кнопку "Выйти"
