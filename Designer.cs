@@ -229,9 +229,12 @@ namespace Construct
 			}
 		}
 		// Метод отображающий дни месяца
-		internal void DrawMonth(int index)
+		internal void DrawMonth(int index, object sender)
 		{
 			// Отображаем название месяца
+			if(index >= 12)
+			{
+				(sender as Label).TabIndex = 11; return;}
 			monthHeaderLabel.Text = listNameMonthLong[index];
 			// Отключаем ненужные события
 			for (int i = 0 ; i < 42; i++)
@@ -245,20 +248,29 @@ namespace Construct
 			
 			int day;
 			// Определяем начальный день с которого начнется отображение
-			int dayBegin = year[1].listMonth[index - 1].listDay.Count();
-			dayBegin -= dayWeek[new DateTime(year[1].yearInt, index + 1, 1).DayOfWeek.ToString()];
+			int dayBegin;
+			if (index == 0) dayBegin = 31;
+				else
+			dayBegin = year[1].listMonth[index - 1].listDay.Count();
+				dayBegin -= dayWeek[new DateTime(year[1].yearInt, index + 1, 1).DayOfWeek.ToString()];
+
+			int colDay;
+			if (index == 0) colDay = 31;
+			else
+			colDay = year[1].listMonth[index - 1].listDay.Count();
+			
 			// Изменяем начальный день если текущий месяц начинается с понедельника
-			if (year[1].listMonth[index - 1].listDay.Count() <= dayBegin)
-				dayBegin = year[1].listMonth[index - 1].listDay.Count() - 7;
+			if (colDay <= dayBegin)
+				dayBegin = colDay - 7;
 			// Отображаем дни предыдущего месяца
-			for (day = 0; dayBegin < year[1].listMonth[index - 1].listDay.Count(); day++, dayBegin++)
+			for (day = 0; dayBegin < colDay; day++, dayBegin++)
 			{
 				dayLabel[day].TabIndex = index;
 				dayLabel[day].Text = (dayBegin + 1) + "";
 				dayLabel[day].BackColor = Color.FromArgb(100, 100, 100);
 			}
 			// Отображаем дни текущего месяца
-			for (dayBegin = 0; dayBegin < year[1].listMonth[index].listDay.Count(); day++, dayBegin++)
+			for (dayBegin = 0; dayBegin < colDay; day++, dayBegin++)
 			{
 				dayLabel[day].TabIndex = index;
 				dayLabel[day].Text = (dayBegin + 1) + "";
@@ -296,9 +308,12 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				monthBackwardLabel.TabIndex = (sender as Label).TabIndex - 1;
+				if ((sender as Label).TabIndex - 1 == -1) monthBackwardLabel.TabIndex = 13;
+
+
+				else	monthBackwardLabel.TabIndex = (sender as Label).TabIndex - 1;
 				monthForwardLabel.TabIndex = (sender as Label).TabIndex + 1;
-				DrawMonth((sender as Label).TabIndex);
+				DrawMonth((sender as Label).TabIndex, (sender as Label));
 			}
 		}
 		// Нажатие на предыдущий месяц
@@ -308,8 +323,9 @@ namespace Construct
 			{
 				monthHeaderLabel.TabIndex = (sender as Label).TabIndex;
 				monthForwardLabel.TabIndex = (sender as Label).TabIndex + 1;
+				if((sender as Label).TabIndex != 0)
 				monthBackwardLabel.TabIndex = (sender as Label).TabIndex - 1;
-				DrawMonth(monthHeaderLabel.TabIndex);
+				DrawMonth(monthHeaderLabel.TabIndex, (sender as Label));
 			}
 		}
 		// Нажатие на слудующий месяц
@@ -320,7 +336,7 @@ namespace Construct
 				monthBackwardLabel.TabIndex = (sender as Label).TabIndex - 1;
 				monthHeaderLabel.TabIndex = (sender as Label).TabIndex;
 				monthForwardLabel.TabIndex = (sender as Label).TabIndex + 1;
-				DrawMonth(monthHeaderLabel.TabIndex);
+				DrawMonth(monthHeaderLabel.TabIndex, (sender as Label));
 			}
 		}
 		// Нажатие на название месяца
