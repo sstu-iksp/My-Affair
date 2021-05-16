@@ -67,10 +67,6 @@ namespace Construct
 				// Определяем панельку
 				if ((sender as Panel) != null)		actP2 = (sender as Panel);
 				else if ((sender as Label) != null)	actP2 = (Panel)(sender as Label).Parent;
-				// Меняем местами Текстбоксы с Лейблами
-				foreach (Control ctrl in actP2.Controls)
-					if ((ctrl as TextBox) != null || (ctrl as MaskedTextBox) != null)
-						ctrl.BringToFront();
 				// Запоминаем индексы панелей дня и задачи для дальнейшей возможности к ним обратиться
 				beginDay = actP2.Parent.TabIndex;
 				beginCase = days[beginDay].panCase.IndexOf(actP2);
@@ -101,6 +97,9 @@ namespace Construct
 					else if (ctrl.TabIndex == 1)	time = ctrl.Text;
 					else if (ctrl.TabIndex == 2)	desc = ctrl.Text;
 				}
+				Color colorCase = actP.Controls[0].BackColor;
+				Color colorText = actP.Controls[0].ForeColor;
+				
 				// После отпускания кнопки мыши проверяем местоположение панели относительно дней
 				for (int i = 0; i < 7; i++)
 				{
@@ -118,7 +117,7 @@ namespace Construct
 							{
 								// Добавляем на нужную панельку, отображаем и меняем высоту
 								days[i].panCase.Insert(j, actP);
-								year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Insert(j, new Сalendar.Case(name, time, desc));		// <<< ###
+								year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Insert(j, new Сalendar.Case(name, time, desc, colorCase, colorText));		// <<< ###
 								actP.Left = 3;
 								actP.Top = labVoid.Top;
 								b = false;
@@ -128,7 +127,7 @@ namespace Construct
 						if (b)
 						{
 							days[i].panCase.Insert(days[i].panCase.Count(), actP);
-							year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Add(new Сalendar.Case(name, time, desc));		// <<< ###
+							year[1].listMonth[days[i].date.Month - 1].listDay[days[i].date.Day - 1].cases.Add(new Сalendar.Case(name, time, desc, colorCase, colorText));		// <<< ###
 							actP.Left = 3;
 							actP.Top = days[i].posBot;
 						}
@@ -225,41 +224,38 @@ namespace Construct
 		}
 		// Метод для закрытия режима редактирования задачи
 		internal static void MouseClick_Outside(object sender, MouseEventArgs e)
-		{			
+		{
 			if (e.Button == MouseButtons.Left && compl)
 			{
-				// Переменные для записи значений
+				// Откатываем изменения в моент редактирования
 				string name = "";
 				string time = "";
 				string desc = "";
-				// Сначала считываем то, что записанно в Текстбоксах путем перебора всех контролов на панели
 				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
 				{
-					if (ctrl.TabIndex == 3)			name = ctrl.Text;
-					else if (ctrl.TabIndex == 4)	time = ctrl.Text;
-					else if (ctrl.TabIndex == 5)	desc = ctrl.Text;
+					if (ctrl.TabIndex == 0)			name = ctrl.Text;
+					else if (ctrl.TabIndex == 1)	time = ctrl.Text;
+					else if (ctrl.TabIndex == 2)	desc = ctrl.Text;
 				}
-				// После переписываем считанные данные в Лейблы, также путем перебора всех контролов (не круто, но работает)
 				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
 				{
-					if (ctrl.TabIndex == 0)			ctrl.Text = name;
-					else if (ctrl.TabIndex == 1)	ctrl.Text = time;
-					else if (ctrl.TabIndex == 2)	ctrl.Text = desc;
+					if (ctrl.TabIndex == 3)			ctrl.Text = name;
+					else if (ctrl.TabIndex == 4)	ctrl.Text = time;
+					else if (ctrl.TabIndex == 5)	ctrl.Text = desc;
 				}
-				// Далее меняем местами Лейблы с Текстбоксами
 				foreach (Control ctrl in actP2.Controls)
 					if ((ctrl as Label) != null) ctrl.BringToFront();
-				// Меняем значения в классе календаря
-				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].nameCase = name;		// <<< ###
-				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].lastTime = time;
-				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].description = desc;
 				
-				// Скрыаем кнопки задачи
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].priority = false;	// ***
+				// Скрыаем кнопки задачи и другие
 				labCase1.Visible = false;
 				labCase2.Visible = false;
-				labCase3.Visible = false;
 				labCase4.Visible = false;
 				labCase5.Visible = false;
+				labSave.Visible = false;
+				labCancel.Visible = false;
+				Core.VisibleList(labColor, false);
+					
 				compl = false;
 			}
 		}

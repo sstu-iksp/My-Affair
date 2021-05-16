@@ -78,27 +78,26 @@ namespace Construct
 				if (e.Button == MouseButtons.Left && !compl)
 				{
 					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
-					CaseAdd(Copy_Case(panDay, 3, posBot, "NameTest", "18-00", "Des keku keku"));
-					year[1].listMonth[date.Month - 1].listDay[date.Day - 1].cases.Add(new Сalendar.Case("NameTest", "18-00", "Des keku keku"));		// <<< ###
+					CaseAdd(Copy_Case(panDay, 3, posBot, "NameCase", "00:00", "Description", Color.BlueViolet, Color.White));
+					year[1].listMonth[date.Month - 1].listDay[date.Day - 1].cases.Add(new Сalendar.Case("NameCase", "00:00", "Description", Color.BlueViolet, Color.White));		// <<< ###
 					// ***
 					labAddCase.Text = panCase.Count() + " ";				// -------------------------------------------------- DEBAG
 					// ***
 				}
 			}
 			// Временный метод позволяющий копировать задачу, а точнее создать пустую
-			internal Panel Copy_Case(Panel pan, int x, int y, string name, string time, string desc)
+			internal Panel Copy_Case(Panel pan, int x, int y, string name, string time, string desc, Color colorCase, Color colorText)
 			{
-				Panel p = Core.CreatePan(pan, x, y, 170, 100);
+				Panel p = Core.CreatePan(pan, x, y, 170, 100, Color.Black);
 				// Лейблы названия, времени и описания задачи
-				Label labCaseNameT = Core.CreateLab(p, 5, 5, 105, 20, 11);
-				Label labCaseTimeT = Core.CreateLab(p, 110, 5, 55, 20, 11);
-				Label labCaseDescT = Core.CreateLab(p, 5, 26, 160, 70, 9);
-				// Текстбокс для редактирования названия, времени и описания задачи
-				TextBox boxCaseNameT = Core.CreateBox(p, 5, 5, 105, 20, 10, true);
-			//	TextBox boxCaseTimeT = Core.CreateBox(p, 110, 5, 55, 20, 11, true);
-				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 110, 5, 55, 20, 8, true);	// Проблемы с размерами (Высота зависит от шрифта)
-				TextBox boxCaseDescT = Core.CreateBox(p, 5, 26, 160, 70, 9, true);
-				
+				Label labCaseNameT = Core.CreateLab(p, 1, 1, 115, 20, 11, name, colorCase);
+				Label labCaseTimeT = Core.CreateLab(p, 117, 1, 52, 20, 10, time, colorCase);
+				Label labCaseDescT = Core.CreateLab(p, 1, 22, 168, 77, 10, desc, colorCase);
+				// Текстбоксы для редактирования названия, времени и описания задачи
+				TextBox boxCaseNameT = Core.CreateBox(p, 1, 1, 115, 20, 10, true);
+				MaskedTextBox boxCaseTimeT = Core.CreateMasBox(p, 117, 1, 52, 20, 8, true);	// Проблемы с размерами (Высота зависит от шрифта)
+				TextBox boxCaseDescT = Core.CreateBox(p, 1, 22, 168, 77, 10, true);
+				// Устанавливаем индексы для дальнейшего использования во время редактирования текста
 				labCaseNameT.TabIndex = 0;
 				labCaseTimeT.TabIndex = 1;
 				labCaseDescT.TabIndex = 2;
@@ -106,50 +105,31 @@ namespace Construct
 				boxCaseTimeT.TabIndex = 4;
 				boxCaseDescT.TabIndex = 5;
 				
-				boxCaseNameT.BackColor = Color.FromArgb(133, 238, 176);
-				boxCaseNameT.MaxLength = 10;
-				boxCaseTimeT.BackColor = Color.FromArgb(133, 238, 176);
-				boxCaseTimeT.Mask = "00:00-00:00";
-				boxCaseDescT.BackColor = Color.FromArgb(133, 238, 176);
-				boxCaseDescT.MaxLength = 50;
-				
-				p.BackColor = Color.FromArgb(133, 238, 186);
-				
-				labCaseNameT.BackColor = Color.FromArgb(133, 248, 186);
-				labCaseTimeT.BackColor = Color.FromArgb(133, 238, 176);
-				labCaseDescT.BackColor = Color.FromArgb(133, 228, 166);
-				boxCaseNameT.ForeColor = Color.White;
-				boxCaseTimeT.ForeColor = Color.White;
-				boxCaseDescT.ForeColor = Color.White;
+				boxCaseNameT.BackColor = colorCase;
+				boxCaseNameT.ForeColor = colorText;
+				boxCaseNameT.MaxLength = 12;
+				boxCaseTimeT.BackColor = colorCase;
+				boxCaseTimeT.ForeColor = colorText;
+				boxCaseTimeT.Mask = "00:00";
+				boxCaseDescT.BackColor = colorCase;
+				boxCaseDescT.ForeColor = colorText;
+				boxCaseDescT.MaxLength = 60;
 				
 				labCaseNameT.TextAlign = ContentAlignment.MiddleLeft;
-				labCaseTimeT.TextAlign = ContentAlignment.MiddleRight;
+			//	labCaseTimeT.TextAlign = ContentAlignment.MiddleRight;
 				labCaseDescT.TextAlign = ContentAlignment.TopLeft;
 				
-				labCaseNameT.Text = name;
-				labCaseTimeT.Text = time;
-				labCaseDescT.Text = desc;
 				boxCaseNameT.Text = name;
 				boxCaseTimeT.Text = time;
 				boxCaseDescT.Text = desc;
 				// Присваиваем события для панели и ее составляющих
-				p.MouseMove += (MouseMove_Case);
-				p.MouseDown += (MouseDown_Case);
-				p.MouseUp += (MouseUp_Case);
+				Core.EventAdde(p, MouseMove_Case, MouseDown_Case, MouseUp_Case);
 				// События для возможности выбора задачи
-				labCaseNameT.MouseMove += (MouseMove_Case);
-				labCaseNameT.MouseDown += (MouseDown_Case);
-				labCaseNameT.MouseUp += (MouseUp_Case);
+				Core.EventAdde(labCaseNameT, MouseMove_Case, MouseDown_Case, MouseUp_Case);
+				Core.EventAdde(labCaseTimeT, MouseMove_Case, MouseDown_Case, MouseUp_Case);
+				Core.EventAdde(labCaseDescT, MouseMove_Case, MouseDown_Case, MouseUp_Case);
 				// События для возможности выбора задачи
-				labCaseTimeT.MouseMove += (MouseMove_Case);
-				labCaseTimeT.MouseDown += (MouseDown_Case);
-				labCaseTimeT.MouseUp += (MouseUp_Case);
-				// События для возможности выбора задачи
-				labCaseDescT.MouseMove += (MouseMove_Case);
-				labCaseDescT.MouseDown += (MouseDown_Case);
-				labCaseDescT.MouseUp += (MouseUp_Case);
-				// События для возможности выбора задачи
-				boxCaseNameT.MouseDown += (MouseDown_Case);
+				boxCaseNameT.MouseDown += (MouseDown_Case);			// Зачем ???
 				boxCaseTimeT.MouseDown += (MouseDown_Case);
 				boxCaseDescT.MouseDown += (MouseDown_Case);
 				// События для выхода из режима заполнения задачи
@@ -172,11 +152,6 @@ namespace Construct
 					pan.Top = posBot;
 					posBot += pan.Height + 3;
 				}
-			}
-			// Метод переписывающий задачу
-			internal void PanCaseRewrite()
-			{
-				
 			}
 			// Прокрутка списка задач колесиком мыши
 			internal void MouseWheel_Case(object sender, MouseEventArgs e)
