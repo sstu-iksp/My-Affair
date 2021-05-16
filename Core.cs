@@ -37,6 +37,21 @@ namespace Construct
 			
 			return pan;
 		}
+		// Создание панели с возможностью добавить цвет
+		internal static Panel CreatePan(int left, int top, int width, int height, Color color)
+		{
+			Panel pan = new Panel();
+			pan.Left = left;
+			pan.Top = top;
+			pan.Width = width;
+			pan.Height = height;
+			pan.BackgroundImageLayout = ImageLayout.Stretch;
+			pan.BackColor = color;
+			
+			pan.Visible = false;
+			
+			return pan;
+		}
 		// Создание панели привязанной к другой панели
 		internal static Panel CreatePan(Panel panel, int left, int top, int width, int height)
 		{
@@ -48,6 +63,23 @@ namespace Construct
 			pan.BackgroundImageLayout = ImageLayout.Stretch;
 			pan.Parent = panel;
 			pan.BackColor = Color.Transparent;
+			
+			pan.Visible = false;
+			
+			panel.Controls.Add(pan);
+			return pan;
+		}
+		// Создание панели привязанной к другой панели с возможностью добавить цвет
+		internal static Panel CreatePan(Panel panel, int left, int top, int width, int height, Color color)
+		{
+			Panel pan = new Panel();
+			pan.Left = left;
+			pan.Top = top;
+			pan.Width = width;
+			pan.Height = height;
+			pan.BackgroundImageLayout = ImageLayout.Stretch;
+			pan.Parent = panel;
+			pan.BackColor = color;
 			
 			pan.Visible = false;
 			
@@ -83,7 +115,7 @@ namespace Construct
 			pan.Controls.Add(pb);
 			return pb;
 		}
-		// Созжание лейбла
+		// Создание лейбла
 		internal static Label CreateLab(Panel pan, int left, int top, int width, int height, float f)
 		{
 			Label lab = new Label();
@@ -95,6 +127,58 @@ namespace Construct
 			lab.ForeColor = Color.White;
 			lab.TextAlign = ContentAlignment.MiddleCenter;
 			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
+			
+			pan.Controls.Add(lab);
+			return lab;
+		}
+		// Создание лейбла с текстом
+		internal static Label CreateLab(Panel pan, int left, int top, int width, int height, float f, string text)
+		{
+			Label lab = new Label();
+			
+			lab.Left = left;
+			lab.Top = top;
+			lab.Width = width;
+			lab.Height = height;
+			lab.ForeColor = Color.White;
+			lab.TextAlign = ContentAlignment.MiddleCenter;
+			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
+			lab.Text = text;
+			
+			pan.Controls.Add(lab);
+			return lab;
+		}
+		// Создание лейбла с текстом и возможностью выбрать цвет
+		internal static Label CreateLab(Panel pan, int left, int top, int width, int height, float f, string text, Color color)
+		{
+			Label lab = new Label();
+			
+			lab.Left = left;
+			lab.Top = top;
+			lab.Width = width;
+			lab.Height = height;
+			lab.ForeColor = Color.White;
+			lab.TextAlign = ContentAlignment.MiddleCenter;
+			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
+			lab.BackColor = color;
+			lab.Text = text;
+			
+			pan.Controls.Add(lab);
+			return lab;
+		}
+		// Создание лейбла с возможностью выбрать цвет
+		internal static Label CreateLab(Panel pan, int left, int top, int width, int height, float f, Color color)
+		{
+			Label lab = new Label();
+			
+			lab.Left = left;
+			lab.Top = top;
+			lab.Width = width;
+			lab.Height = height;
+			lab.ForeColor = Color.White;
+			lab.TextAlign = ContentAlignment.MiddleCenter;
+			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
+			lab.BackColor = color;
 			
 			pan.Controls.Add(lab);
 			return lab;
@@ -163,6 +247,38 @@ namespace Construct
 			
 			pan.Controls.Add(box);			
 			return box;
+		}
+		// Метод позволяющий добавлять события к элементу
+		internal static void EventAdd(object element, MouseEventHandler mouseClick, EventHandler mouseEnter, EventHandler mouseLeave)
+		{
+			if (element as Label != null)
+			{
+				(element as Label).MouseClick += mouseClick;
+				(element as Label).MouseEnter += mouseEnter;
+				(element as Label).MouseLeave += mouseLeave;				
+			}
+			else if (element as Panel != null)
+			{
+				(element as Panel).MouseClick += mouseClick;
+				(element as Panel).MouseEnter += mouseEnter;
+				(element as Panel).MouseLeave += mouseLeave;		
+			}
+		}
+		// Метод позволяющий добавлять события к элементу
+		internal static void EventAdde(object element, MouseEventHandler mouseMove, MouseEventHandler mouseDown, MouseEventHandler mouseUp)
+		{
+			if (element as Label != null)
+			{
+				(element as Label).MouseMove += mouseMove;
+				(element as Label).MouseDown += mouseDown;
+				(element as Label).MouseUp += mouseUp;				
+			}
+			else if (element as Panel != null)
+			{
+				(element as Panel).MouseMove += mouseMove;
+				(element as Panel).MouseDown += mouseDown;
+				(element as Panel).MouseUp += mouseUp;	
+			}
 		}
 		// Метод скрывающий или показывающий элементы коллекции
 		internal static void VisibleList(List<Label> list, bool b)

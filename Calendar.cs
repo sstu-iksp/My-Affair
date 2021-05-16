@@ -55,19 +55,37 @@ namespace Construct
 			
 		}
 		
-		internal class Case 
+		internal class Case
 		{
 			internal string nameCase;
 			internal string lastTime;
-			//internal string firstTime;
 			internal string description;
+			// Цвет задачи
+			internal Color colorCase;
+			// Цвет текста
+			internal Color colorText;
+			// Приоритет задачи
+			internal bool priority;
 			
-			internal Case(string nameCase, string lastTime, string description)
+			internal Case(string nameCase, string lastTime, string description, Color colorCase, Color colorText)
 			{
 				this.nameCase = nameCase;
 				this.lastTime = lastTime;
 				this.description  = description;
-				//this.firstTime = firstTime;
+				this.colorCase = colorCase;
+				this.colorText = colorText;
+			}
+			
+			internal void CaseRewrite(string name, string time, string desc)
+			{
+				nameCase = name;
+				lastTime = time;
+				description  = desc;
+			}
+			
+			internal void CasePriority(bool b)
+			{
+				priority = b;
 			}
 			
 		}

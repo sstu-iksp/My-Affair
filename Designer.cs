@@ -15,7 +15,7 @@ namespace Construct
 		// Главная и единственная форма
 		internal static Form form;
 		// Панель недели
-		internal static Panel panWeekMain = Core.CreatePan(0, 0, 1280, 720);
+		internal static Panel panWeekMain = Core.CreatePan(0, 0, 1280, 720, Color.FromArgb(255, 216, 177));
 		// Определяем года
 		internal static Сalendar.Year[] year =
 		{
@@ -33,14 +33,12 @@ namespace Construct
 			FormBorderStyle = FormBorderStyle.FixedSingle;
 			// Блокировка полноэкранного режима
 			MaximizeBox = false;
-			// Создаем основную форму
+			// Создаем форму
 			form = Core.CreateWindow(this, 10, 10, 1280, 720, "My-Affair");
 			// Включаем возможность отслеживания нажатия клавиш
 			form.KeyPreview = true;
 			// Цвет формы (скрыта)
 			form.BackColor = Color.FromArgb(255, 216, 177);
-			// Цвет панельки недели
-			panWeekMain.BackColor = Color.FromArgb(255, 216, 177);
 			// Отображаем главную панель
 			panWeekMain.Visible = true;
 			Controls.Add(panWeekMain);
@@ -61,21 +59,21 @@ namespace Construct
 		// Просто массив с днями недели
 		internal string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 		internal Dictionary<string, int> dayWeek = new Dictionary<string, int>();
-		// Пустаяя панелька
-		internal static Label labVoid;
+		// Пустая панелька
+		internal static Label labVoid = Core.CreateLab(panWeekMain, 3, 28, 170, 30, 10, Color.FromArgb(201, 201, 201));
 		// Метод создающий дни недели, которые отображаются на экран, размер панельки дня 175x600 px
 		internal void InitializeWeek()
 		{
 			// Здесь возможно будет чтение из базы данных
 			//***																												// Временное заполнение классов
-			year[1].listMonth[2].listDay[24].cases.Add(new Сalendar.Case("Тест", "11:11", "Да да я"));
-			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Позавтракать", "09:00", "Чтобы вырасти, нужно хорошо питаться"));
-			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Поужинать", "12:00", "Чтобы вырасти, нужно хорошо питаться x2"));
-			year[1].listMonth[3].listDay[25].cases.Add(new Сalendar.Case("Пара", "09:45-11:15", "Пара по 1С"));
-			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите"));
-			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "222"));
-			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "333"));
-			year[1].listMonth[3].listDay[29].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите"));
+			year[1].listMonth[2].listDay[24].cases.Add(new Сalendar.Case("Тест", "11:11", "Да да я", Color.BlueViolet, Color.White));
+			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Позавтракать", "09:00", "Чтобы вырасти, нужно хорошо питаться", Color.BlueViolet, Color.White));
+			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Поужинать", "12:00", "Чтобы вырасти, нужно хорошо питаться x2", Color.BlueViolet, Color.White));
+			year[1].listMonth[3].listDay[25].cases.Add(new Сalendar.Case("Пара", "09:45-11:15", "Пара по 1С", Color.BlueViolet, Color.White));
+			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите", Color.BlueViolet, Color.White));
+			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "222", Color.BlueViolet, Color.White));
+			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "333", Color.BlueViolet, Color.White));
+			year[1].listMonth[3].listDay[29].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите", Color.BlueViolet, Color.White));
 			//***
 			
 			for (int i = 0; i < 7; i++)
@@ -91,9 +89,7 @@ namespace Construct
 			}
 			// Отрисовыаем неделю
 			DrawWeek(ddd, mmm, false);
-			// Пустой лейбл
-			labVoid = Core.CreateLab(days[0].panDay, 3, 28, 170, 30, 10);
-			labVoid.BackColor = Color.FromArgb(201, 201, 201);
+			// Скрываем пустой лейбл
 			labVoid.Visible = false;
 		}
 		// Метод перерисовывающий дни недели
@@ -130,7 +126,7 @@ namespace Construct
 				// Заполняем дни недели на экране задачами из классов
 				foreach (Сalendar.Case cs in year[numYear].listMonth[monthNow - mon].listDay[numDay].cases)	// С месяцем проблеммы тоже !!!
 				{
-					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description));
+					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description, cs.colorCase, cs.colorText));
 					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
 				}
 				// Выделяем текущий день
@@ -142,7 +138,7 @@ namespace Construct
 		}
 		
 		// Панель календаря
-		internal static Panel panCalendar = Core.CreatePan(panWeekMain, 150, 150, 800, 600);
+		internal static Panel panCalendar = Core.CreatePan(panWeekMain, 150, 150, 800, 600, Color.FromArgb(0, 180, 140));
 		// Коллекции лейблов для календаря
 		internal List<Label> dayLabel = new List<Label>();
 		internal List<Label> weekLabel = new List<Label>();
@@ -157,21 +153,17 @@ namespace Construct
 		// Инициализация состовляющих календаря
 		internal void InitializeCalendarView()
 		{
-			panCalendar.BackColor = Color.FromArgb(0, 180, 140);
 			// Временное предупреждение
-			Label warning = Core.CreateLab(panCalendar, 0, 0, 800, 40, 12);									// warning
-			warning.Text = "Перюключение между годами так-же как и крайние месяца еще не работают!!!";		// warning
-			warning.ForeColor = Color.FromArgb(35, 35, 235);												// warning
+			Label warning = Core.CreateLab(panCalendar, 0, 0, 800, 40, 12);	// warning
+			warning.Text = "Перюключение между годами так-же как и крайние месяца еще не работают!!!";
 			
 			// Создаем лейблы месяцев
 			for (int i = 0, j = 0; i < 12; i++)
 			{
 				if (i == 4 || i == 8)	j++;
 				
-				listMonthLabels.Add(Core.CreateLab(panCalendar, 50 + i * 55 - j * 4 * 55, 100 + j * 55, 50, 50, 13));
-				listMonthLabels[i].BackColor = Color.FromArgb(88, 123, 224);
+				listMonthLabels.Add(Core.CreateLab(panCalendar, 50 + i * 55 - j * 4 * 55, 100 + j * 55, 50, 50, 13, listNameMonthShort[i] + "", Color.FromArgb(88, 123, 224)));
 				listMonthLabels[i].TabIndex = i;
-				listMonthLabels[i].Text = "" + listNameMonthShort[i];
 				listMonthLabels[i].BringToFront();
 				listMonthLabels[i].MouseClick+= (MouseClick_labMonth);
 				// Выделяем текущий месяц
@@ -186,35 +178,22 @@ namespace Construct
 				listMonthLabels[i].MouseLeave += (MouseLeave_viewMonths);
 			}
 			// Кнопка переключения на предыдущий месяц
-			monthBackwardLabel = Core.CreateLab(panCalendar, 50, 40, 50, 50, 18);
-			monthBackwardLabel.BackColor = Color.FromArgb(88, 123, 224);
-			monthBackwardLabel.Text = "<";
-			monthBackwardLabel.MouseClick += (MouseClick_backwardMonth);
-			monthBackwardLabel.MouseEnter += (MouseEnter_viewMonths);
-			monthBackwardLabel.MouseLeave += (MouseLeave_viewMonths);
+			monthBackwardLabel = Core.CreateLab(panCalendar, 50, 40, 50, 50, 18, "<", Color.FromArgb(88, 123, 224));
+			Core.EventAdd(monthBackwardLabel, MouseClick_backwardMonth, MouseEnter_viewMonths, MouseLeave_viewMonths);
 			monthBackwardLabel.Visible = false;
 			// Создаем лейбл названия месяца
-			monthHeaderLabel = Core.CreateLab(panCalendar, monthBackwardLabel.Left + monthBackwardLabel.Width + 5, monthBackwardLabel.Top, 270, 50, 18);
-			monthHeaderLabel.BackColor = Color.FromArgb(88, 123, 224);
-			monthHeaderLabel.MouseClick += (MouseClick_viewMonth);
-			monthHeaderLabel.MouseEnter += (MouseEnter_viewMonths);
-			monthHeaderLabel.MouseLeave += (MouseLeave_viewMonths);
+			monthHeaderLabel = Core.CreateLab(panCalendar, monthBackwardLabel.Left + monthBackwardLabel.Width + 5, monthBackwardLabel.Top, 270, 50, 18, Color.FromArgb(88, 123, 224));
+			Core.EventAdd(monthHeaderLabel, MouseClick_viewMonth, MouseEnter_viewMonths, MouseLeave_viewMonths);
 			monthHeaderLabel.Visible = false;
 			// Кнопка переключения на следующий месяц
-			monthForwardLabel = Core.CreateLab(panCalendar, monthHeaderLabel.Left + monthHeaderLabel.Width + 5, monthHeaderLabel.Top, 50, 50, 18);
-			monthForwardLabel.BackColor = Color.FromArgb(88, 123, 224);
-			monthForwardLabel.Text = ">";
-			monthForwardLabel.MouseClick += (MouseClick_forwardMonth);
-			monthForwardLabel.MouseEnter += (MouseEnter_viewMonths);
-			monthForwardLabel.MouseLeave += (MouseLeave_viewMonths);
+			monthForwardLabel = Core.CreateLab(panCalendar, monthHeaderLabel.Left + monthHeaderLabel.Width + 5, monthHeaderLabel.Top, 50, 50, 18, ">", Color.FromArgb(88, 123, 224));
+			Core.EventAdd(monthForwardLabel, MouseClick_forwardMonth, MouseEnter_viewMonths, MouseLeave_viewMonths);
 			monthForwardLabel.Visible = false;
 			// Создаем лейблы названий дней
 			for (int i = 0; i < 7; i++)
 			{
-				weekLabel.Add(Core.CreateLab(panCalendar, monthBackwardLabel.Left + i * 55, monthBackwardLabel.Top + monthBackwardLabel.Height + 5, 50, 50, 18));
-				weekLabel[i].BackColor = Color.FromArgb(128, 128, 128);
+				weekLabel.Add(Core.CreateLab(panCalendar, monthBackwardLabel.Left + i * 55, monthBackwardLabel.Top + monthBackwardLabel.Height + 5, 50, 50, 18, listNameWeek[i], Color.FromArgb(128, 128, 128)));
 				weekLabel[i].ForeColor = Color.FromArgb(102, 0, 0);
-				weekLabel[i].Text = listNameWeek[i];
 				weekLabel[i].Visible = false;
 			}
 			// Создаем лейблы дней
@@ -223,8 +202,7 @@ namespace Construct
 				if (i % 7 == 0 && i != 0)
 					j++;
 				
-				dayLabel.Add(Core.CreateLab(panCalendar, weekLabel[0].Left + i * 55 - j * 385, weekLabel[0].Top + weekLabel[0].Height + 5 + j * 55, 50, 50, 18));
-				dayLabel[i].BackColor = Color.FromArgb(201, 201, 201);
+				dayLabel.Add(Core.CreateLab(panCalendar, weekLabel[0].Left + i * 55 - j * 385, weekLabel[0].Top + weekLabel[0].Height + 5 + j * 55, 50, 50, 18, Color.FromArgb(201, 201, 201)));
 				dayLabel[i].Visible = false;
 			}
 		}
@@ -266,15 +244,11 @@ namespace Construct
 				if (year[1].yearInt == DateTime.Now.Year && index + 1 == DateTime.Now.Month && dayBegin + 1 == DateTime.Now.Day)
 				{
 					dayLabel[day].BackColor = Color.FromArgb(128, 0, 128);
-					dayLabel[day].MouseClick += (MouseClick_PrintWeek);
-					dayLabel[day].MouseEnter += (MouseEnter_dayNow);
-					dayLabel[day].MouseLeave += (MouseLeave_dayNow);
+					Core.EventAdd(dayLabel[day], MouseClick_PrintWeek, MouseEnter_dayNow, MouseLeave_dayNow);
 					continue;
 				}
 				dayLabel[day].BackColor = Color.FromArgb(125, 81, 237);
-				dayLabel[day].MouseClick += (MouseClick_PrintWeek);
-				dayLabel[day].MouseEnter += (MouseEnter_viewDays);
-				dayLabel[day].MouseLeave += (MouseLeave_viewDays);
+				Core.EventAdd(dayLabel[day], MouseClick_PrintWeek, MouseEnter_viewDays, MouseLeave_viewDays);
 			}
 			// Отображаем дни следующего месяца
 			for (dayBegin = 0; day < 42; day++, dayBegin++)

@@ -14,107 +14,173 @@ namespace Construct
 	partial class MainForm
 	{
 		// Лейбл для задачи "Редактировать"
-		internal static Label labCase1 = Core.CreateLab(panWeekMain, 0, 0, 100, 20, 8);
+		internal static Label labCase1 = Core.CreateLab(panWeekMain, 0, 0, 100, 20, 8, "Редактировать", Color.FromArgb(150, 35, 255));
 		// Лейбл для задачи "Изменить цвет"
-		internal static Label labCase2 = Core.CreateLab(panWeekMain, 0, 25, 100, 20, 8);
-		// Лейбл для задачи "Повтор"
-		internal static Label labCase3 = Core.CreateLab(panWeekMain, 0, 50, 100, 20, 8);
+		internal static Label labCase2 = Core.CreateLab(panWeekMain, 0, 25, 100, 20, 8, "Изменить цвет", Color.FromArgb(150, 35, 255));
 		// Лейбл для задачи "Дублировать"
-		internal static Label labCase4 = Core.CreateLab(panWeekMain, 0, 75, 100, 20, 8);
+		internal static Label labCase4 = Core.CreateLab(panWeekMain, 0, 75, 100, 20, 8, "Дублировать", Color.FromArgb(150, 35, 255));
 		// Лейбл для задачи "Приоритет"
-		internal static Label labCase5 = Core.CreateLab(panWeekMain, 0, 100, 100, 20, 8);
+		internal static Label labCase5 = Core.CreateLab(panWeekMain, 0, 100, 100, 20, 8, "Приоритет", Color.FromArgb(150, 35, 255));
 		// Лейбл "Календарь"
-		internal static Label labCalendar = Core.CreateLab(panWeekMain, 15, 7, 175, 35, 10);
+		internal static Label labCalendar = Core.CreateLab(panWeekMain, 15, 7, 175, 35, 10, "Календарь", Color.FromArgb(150, 35, 255));
 		// Лейбл "Назад"
-		internal static Label labBackward = Core.CreateLab(panWeekMain, 15, panWeekMain.Height - 60, 355, 50, 18);
+		internal static Label labBackward = Core.CreateLab(panWeekMain, 15, panWeekMain.Height - 60, 355, 50, 18, "<<<", Color.FromArgb(133, 238, 176));
 		// Лейбл "Вперед"
-		internal static Label labForward = Core.CreateLab(panWeekMain, panWeekMain.Width - 365, panWeekMain.Height - 60, 355, 50, 18);
+		internal static Label labForward = Core.CreateLab(panWeekMain, panWeekMain.Width - 365, panWeekMain.Height - 60, 355, 50, 18, ">>>", Color.FromArgb(133, 238, 176));
 		// Лейбл "Удалить"
-		internal static Label labDelete = Core.CreateLab(panWeekMain, 490, 5, 300, 40, 16);
+		internal static Label labDelete = Core.CreateLab(panWeekMain, 490, 5, 300, 40, 16, "удалить", Color.FromArgb(245, 162, 142));
 		// Кнопка "Выйти"
-		internal static Label labExit = Core.CreateLab(panWeekMain, 1200, 5, 70, 20, 10);
+		internal static Label labExit = Core.CreateLab(panWeekMain, 1200, 5, 70, 20, 10, "Выйти", Color.FromArgb(129, 202, 228));
 		// Отображение различных элементов
 		internal void InitializeElements()
 		{
-			labCase1.Text = "Редактировать";
-			labCase1.BackColor = Color.FromArgb(150, 35, 255);
-			labCase1.MouseClick += (MouseClick_labCase1);
-			labCase1.MouseEnter += (MouseEnter_labCase);
-			labCase1.MouseLeave += (MouseLeave_labCase);
+			Core.EventAdd(labCase1, MouseClick_labCase1, MouseEnter_labCase, MouseLeave_labCase);
 			labCase1.Visible = false;
-			labCase2.Text = "Изменить цвет";
-			labCase2.BackColor = Color.FromArgb(150, 35, 255);
-			labCase2.MouseClick += (MouseClick_labCase2);
-			labCase2.MouseEnter += (MouseEnter_labCase);
-			labCase2.MouseLeave += (MouseLeave_labCase);
+			Core.EventAdd(labCase2, MouseClick_labCase2, MouseEnter_labCase, MouseLeave_labCase);
 			labCase2.Visible = false;
-			labCase3.Text = "Повтор";
-			labCase3.BackColor = Color.FromArgb(150, 35, 255);
-			labCase3.MouseClick += (MouseClick_labCase3);
-			labCase3.MouseEnter += (MouseEnter_labCase);
-			labCase3.MouseLeave += (MouseLeave_labCase);
-			labCase3.Visible = false;
-			labCase4.Text = "Дублировать";
-			labCase4.BackColor = Color.FromArgb(150, 35, 255);
-			labCase4.MouseClick += (MouseClick_labCase4);
-			labCase4.MouseEnter += (MouseEnter_labCase);
-			labCase4.MouseLeave += (MouseLeave_labCase);
+			Core.EventAdd(labCase4, MouseClick_labCase4, MouseEnter_labCase, MouseLeave_labCase);
 			labCase4.Visible = false;
-			labCase5.Text = "Приоритет";
-			labCase5.BackColor = Color.FromArgb(150, 35, 255);
-			labCase5.MouseClick += (MouseClick_labCase5);
-			labCase5.MouseEnter += (MouseEnter_labCase);
-			labCase5.MouseLeave += (MouseLeave_labCase);
+			Core.EventAdd(labCase5, MouseClick_labCase5, MouseEnter_labCase, MouseLeave_labCase);
 			labCase5.Visible = false;
 			
-			labCalendar.Text = "Календарь";
-			labCalendar.BackColor = Color.FromArgb(150, 35, 255);
-			labCalendar.MouseClick += (MouseClick_labCalendar);
-			labCalendar.MouseEnter += (MouseEnter_labCalendar);
-			labCalendar.MouseLeave += (MouseLeave_labCalendar);
+			Core.EventAdd(labCalendar, MouseClick_labCalendar, MouseEnter_labCalendar, MouseLeave_labCalendar);
 			labCalendar.MouseClick += (MouseClick_Outside);				// ###
-			labBackward.Text = "<<<";
-			labBackward.BackColor = Color.FromArgb(133, 238, 176);
-			labBackward.MouseClick += (MouseClick_labBackard);
-			labBackward.MouseEnter += (MouseEnter_labBF);
-			labBackward.MouseLeave += (MouseLeave_labBF);
+			Core.EventAdd(labBackward, MouseClick_labBackard, MouseEnter_labBF, MouseLeave_labBF);
 			labBackward.MouseClick += (MouseClick_Outside);				// ###
-			labForward.Text = ">>>";
-			labForward.BackColor = Color.FromArgb(133, 238, 176);
-			labForward.MouseClick += (MouseClick_labForward);
-			labForward.MouseEnter += (MouseEnter_labBF);
-			labForward.MouseLeave += (MouseLeave_labBF);
+			Core.EventAdd(labForward, MouseClick_labForward, MouseEnter_labBF, MouseLeave_labBF);
 			labForward.MouseClick += (MouseClick_Outside);				// ###
-			labDelete.Text = "удалить";
-			labDelete.BackColor = Color.FromArgb(245, 162, 142);
 			labDelete.Visible = false;
-			labExit.Text = "Выйти";
-			labExit.BackColor = Color.FromArgb(129, 202, 228);
-			labExit.MouseClick += (MouseClick_labExit);
-			labExit.MouseEnter += (MouseEnter_labExit);
-			labExit.MouseLeave += (MouseLeave_labExit);
+			Core.EventAdd(labExit, MouseClick_labExit, MouseEnter_labExit, MouseLeave_labExit);
 			labExit.MouseClick += (MouseClick_Outside);					// ###
+			
+			labInit();
 		}
 		// Метод отображающий кнопки задачи
 		internal static void caseViewBut(int left, int top, int width)
 		{
 			labCase1.Location = new Point(left + width + 5, top);
 			labCase2.Location = new Point(left + width + 5, labCase1.Top + labCase1.Height + 5);
-			labCase3.Location = new Point(left + width + 5, labCase2.Top + labCase2.Height + 5);
-			labCase4.Location = new Point(left + width + 5, labCase3.Top + labCase3.Height + 5);
+			labCase4.Location = new Point(left + width + 5, labCase2.Top + labCase2.Height + 5);
 			labCase5.Location = new Point(left + width + 5, labCase4.Top + labCase4.Height + 5);
 			labCase1.Visible = true;
 			labCase2.Visible = true;
-			labCase3.Visible = true;
 			labCase4.Visible = true;
 			labCase5.Visible = true;
 		}
+		
+		// Лейблы для выбора цвета
+		internal static List<Label> labColor = new List<Label>();
+		// Временный метод
+		internal void labInit()
+		{
+			labSave.BringToFront();
+			labSave.Visible = false;
+			labSave.MouseClick += (MouseClick_labSave);
+			labCancel.BringToFront();
+			labCancel.Visible = false;
+			labCancel.MouseClick += (MouseClick_labCancel);
+			
+			for (int i = 0; i < 8; i++)
+			{
+				labColor.Add(Core.CreateLab(panWeekMain, 0, 0, 20, 20, 10));
+				labColor[i].BringToFront();
+				labColor[i].Visible = false;
+				labColor[i].MouseClick += (MouseClick_labColor);
+			}
+			// Цвета
+			labColor[0].BackColor = Color.FromArgb(80, 220, 60);
+			labColor[1].BackColor = Color.FromArgb(70, 250, 190);
+			labColor[2].BackColor = Color.FromArgb(220, 40, 40);
+			labColor[3].BackColor = Color.FromArgb(250, 220, 40);
+			labColor[4].BackColor = Color.FromArgb(130, 130, 130);
+			labColor[5].BackColor = Color.BlueViolet;
+			labColor[6].BackColor = Color.FromArgb(70, 60, 130);
+			labColor[7].BackColor = Color.FromArgb(250, 115, 45);
+		}
+		// Лейбл для задачи "Сохранить"
+		internal static Label labSave = Core.CreateLab(panWeekMain, 0, 0, 80, 30, 8, "Сохранить", Color.FromArgb(80, 220, 60));
+		// Лейбл для задачи "Отменить"
+		internal static Label labCancel = Core.CreateLab(panWeekMain, 0, 0, 80, 30, 8, "Отменить", Color.FromArgb(250, 50, 50));
 		// Событие нажатия на кнопку "Редактировать"
 		internal void MouseClick_labCase1(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				labCase5.BackColor = Color.FromArgb(150, 0, 0);		// Тест ***
+				Core.VisibleList(labColor, false);
+				
+				// Меняем местами Текстбоксы с Лейблами
+				foreach (Control ctrl in actP2.Controls)
+					if ((ctrl as TextBox) != null || (ctrl as MaskedTextBox) != null)
+						ctrl.BringToFront();
+				
+				labSave.Left = actP2.Parent.Left + actP2.Left;
+				labSave.Top = actP2.Parent.Top + actP2.Top + actP2.Height + 5;
+				labSave.Visible = true;
+				
+				labCancel.Left = labSave.Left + labSave.Width + 10;
+				labCancel.Top = actP2.Parent.Top + actP2.Top + actP2.Height + 5;
+				labCancel.Visible = true;
+			}
+		}
+		// Событие нажатия на кнопку "Сохранить"
+		internal void MouseClick_labSave(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				// Переменные для записи значений
+				string name = "";
+				string time = "";
+				string desc = "";
+				// Сначала считываем то, что записанно в Текстбоксах путем перебора всех контролов на панели
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+				{
+					if (ctrl.TabIndex == 3)			name = ctrl.Text;
+					else if (ctrl.TabIndex == 4)	time = ctrl.Text;
+					else if (ctrl.TabIndex == 5)	desc = ctrl.Text;
+				}
+				// Убираем лишние энтеры
+				name = name.Replace("\r\n", " ");
+				desc = desc.Replace("\r\n", " ");
+				// После переписываем считанные данные в Лейблы, также путем перебора всех контролов (не круто, но работает)
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+				{
+					if (ctrl.TabIndex == 0)			ctrl.Text = name;
+					else if (ctrl.TabIndex == 1)	ctrl.Text = time;
+					else if (ctrl.TabIndex == 2)	ctrl.Text = desc;
+				}
+				// Далее меняем местами Лейблы с Текстбоксами
+				foreach (Control ctrl in actP2.Controls)
+					if ((ctrl as Label) != null) ctrl.BringToFront();
+				// Меняем значения в классе календаря
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].CaseRewrite(name, time, desc);
+				labSave.Visible = false;
+				labCancel.Visible = false;
+			}
+		}
+		// Событие нажатия на кнопку "Отменить"
+		internal void MouseClick_labCancel(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				string name = "";
+				string time = "";
+				string desc = "";
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+				{
+					if (ctrl.TabIndex == 0)			name = ctrl.Text;
+					else if (ctrl.TabIndex == 1)	time = ctrl.Text;
+					else if (ctrl.TabIndex == 2)	desc = ctrl.Text;
+				}
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+				{
+					if (ctrl.TabIndex == 3)			ctrl.Text = name;
+					else if (ctrl.TabIndex == 4)	ctrl.Text = time;
+					else if (ctrl.TabIndex == 5)	ctrl.Text = desc;
+				}
+				foreach (Control ctrl in actP2.Controls)
+					if ((ctrl as Label) != null) ctrl.BringToFront();
+				labSave.Visible = false;
+				labCancel.Visible = false;
 			}
 		}
 		// Событие нажатия на кнопку "Изменить цвет"
@@ -122,15 +188,44 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				labCase1.BackColor = Color.FromArgb(150, 0, 0);		// Тест ***
+				labSave.Visible = false;
+				labCancel.Visible = false;
+				
+				// Отображаем кнопки
+				if(beginDay != 6)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						labColor[i].Left = labCase1.Left + labCase1.Width + 5 + (i / 4) * (labColor[0].Width + 5);
+						labColor[i].Top = labCase1.Top + (labCase1.Height + 5) * (i % 4);
+						labColor[i].Visible = true;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						labColor[i].Left = labCase1.Left - (labColor[0].Width + 5) * 2 + (i / 4) * (labColor[0].Width + 5);
+						labColor[i].Top = labCase1.Top + (labCase1.Height + 5) * (i % 4);
+						labColor[i].Visible = true;
+					}
+				}
+				// Меняем местами Лейблы с Текстбоксами если были в режиме редактирования
+				foreach (Control ctrl in actP2.Controls)
+					if ((ctrl as Label) != null) ctrl.BringToFront();
 			}
 		}
-		// Событие нажатия на кнопку "Повтор"
-		internal void MouseClick_labCase3(object sender, MouseEventArgs e)
+		// Событие нажатия на кнопку цвета
+		internal void MouseClick_labColor(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				labCase2.BackColor = Color.FromArgb(150, 0, 0);		// Тест ***
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+					ctrl.BackColor = (sender as Label).BackColor;
+				
+				// Меняем значения в классе календаря
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].colorCase = (sender as Label).BackColor;
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases[days[beginDay].panCase.IndexOf(actP2)].colorText = (sender as Label).ForeColor;
 			}
 		}
 		// Событие нажатия на кнопку "Дублировать"
@@ -138,7 +233,19 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				labCase3.BackColor = Color.FromArgb(150, 0, 0);		// Тест ***
+				string name = "";
+				string time = "";
+				string desc = "";
+				Color colorCase = actP2.Controls[0].BackColor;
+				Color colorText = actP2.Controls[0].ForeColor;
+				foreach (Control ctrl in days[beginDay].panCase[beginCase].Controls)
+				{
+					if (ctrl.TabIndex == 0)			name = ctrl.Text;
+					else if (ctrl.TabIndex == 1)	time = ctrl.Text;
+					else if (ctrl.TabIndex == 2)	desc = ctrl.Text;
+				}
+				days[beginDay].CaseAdd(days[beginDay].Copy_Case(days[beginDay].panDay, 3, days[beginDay].posBot, name, time, desc, colorCase, colorText));
+				year[1].listMonth[days[beginDay].date.Month - 1].listDay[days[beginDay].date.Day - 1].cases.Add(new Сalendar.Case(name, time, desc, colorCase, colorText));
 			}
 		}
 		// Событие нажатия на кнопку "Приоритет"
@@ -146,10 +253,9 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left)
 			{
-				labCase4.BackColor = Color.FromArgb(150, 0, 0);		// Тест ***
+				
 			}
 		}
-		
 		// Событие нажатия на кнопку "Календарь"
 		internal void MouseClick_labCalendar(object sender, MouseEventArgs e)
 		{
