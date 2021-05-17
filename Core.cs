@@ -124,7 +124,7 @@ namespace Construct
 			lab.Top = top;
 			lab.Width = width;
 			lab.Height = height;
-			lab.ForeColor = Color.White;
+			lab.ForeColor = Color.FromArgb(255, 255, 255);
 			lab.TextAlign = ContentAlignment.MiddleCenter;
 			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			
@@ -140,7 +140,7 @@ namespace Construct
 			lab.Top = top;
 			lab.Width = width;
 			lab.Height = height;
-			lab.ForeColor = Color.White;
+			lab.ForeColor = Color.FromArgb(255, 255, 255);
 			lab.TextAlign = ContentAlignment.MiddleCenter;
 			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			lab.Text = text;
@@ -157,7 +157,7 @@ namespace Construct
 			lab.Top = top;
 			lab.Width = width;
 			lab.Height = height;
-			lab.ForeColor = Color.White;
+			lab.ForeColor = Color.FromArgb(255, 255, 255);
 			lab.TextAlign = ContentAlignment.MiddleCenter;
 			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			lab.BackColor = color;
@@ -175,7 +175,7 @@ namespace Construct
 			lab.Top = top;
 			lab.Width = width;
 			lab.Height = height;
-			lab.ForeColor = Color.White;
+			lab.ForeColor = Color.FromArgb(255, 255, 255);
 			lab.TextAlign = ContentAlignment.MiddleCenter;
 			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			lab.BackColor = color;
@@ -192,7 +192,7 @@ namespace Construct
 			lab.Top = top;
 			lab.Width = width;
 			lab.Height = height;
-			lab.ForeColor = Color.White;
+			lab.ForeColor = Color.FromArgb(255, 255, 255);
 			lab.TextAlign = ContentAlignment.MiddleCenter;
 			lab.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			lab.Parent = pan;
@@ -210,7 +210,7 @@ namespace Construct
 			box.Top = top;
 			box.Width = width;
 			box.Height = height;
-			box.ForeColor = Color.Black;
+			box.ForeColor = Color.FromArgb(0, 0, 0);
 			box.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			
 			pan.Controls.Add(box);			
@@ -225,7 +225,7 @@ namespace Construct
 			box.Top = top;
 			box.Width = width;
 			box.Height = height;
-			box.ForeColor = Color.Black;
+			box.ForeColor = Color.FromArgb(0, 0, 0);
 			box.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			box.Multiline = mult;
 			
@@ -241,7 +241,7 @@ namespace Construct
 			box.Top = top;
 			box.Width = width;
 			box.Height = height;
-			box.ForeColor = Color.Black;
+			box.ForeColor = Color.FromArgb(0, 0, 0);
 			box.Font = new Font("Microsoft Sans Serif", f, FontStyle.Bold, GraphicsUnit.Point, 204);
 			box.Multiline = mult;
 			

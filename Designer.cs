@@ -7,6 +7,7 @@ using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Data.SQLite;
 
 namespace Construct
 {
@@ -23,6 +24,8 @@ namespace Construct
 			new Сalendar.Year(Convert.ToInt32(DateTime.Now.ToString("yyyy"))),
 			new Сalendar.Year(Convert.ToInt32(DateTime.Now.ToString("yyyy")) + 1)
 		};
+		// Осуществляем подключение к базе данных
+		Connection conn = Connection.Instance;
 		// Инициализация всех компонентов
 		internal void InitializeComponent()
 		{
@@ -39,9 +42,12 @@ namespace Construct
 			form.KeyPreview = true;
 			// Цвет формы (скрыта)
 			form.BackColor = Color.FromArgb(255, 216, 177);
+			
+			form.FormClosing += FormClosed_upd;
 			// Отображаем главную панель
 			panWeekMain.Visible = true;
 			Controls.Add(panWeekMain);
+			
 			// Инициализация недели
 			InitializeWeek();
 			// Инициализация регистрации/авторизации
@@ -52,6 +58,47 @@ namespace Construct
 			InitializeCalendarView();
 			// Событие для выхода из режима заполнения задачи
 			panWeekMain.MouseClick += (MouseClick_Outside);
+			
+			// Тест
+			initTimer();
+		}
+		// Обновляет базу данных после закрытия
+		internal void FormClosed_upd(object sender, EventArgs e)
+		{
+			// Если задача не перетаскивается и не редактируется
+			if(!act && !compl)
+			{
+				// Прежде чем записывать, удаляем все задачи связанные с текущим пользователем
+				conn.Delete(1);
+				for (int i = 0; i < year[1].listMonth.Count; i++)
+					for (int j = 0; j < year[1].listMonth[i].listDay.Count; j++)
+						foreach (Сalendar.Case cs in year[1].listMonth[i].listDay[j].cases)
+							conn.Write(cs, year[1].yearInt, i, j);
+			}
+		}
+		
+		// Таймер для записи
+		System.Windows.Forms.Timer timerDB = new System.Windows.Forms.Timer();
+		
+		internal void initTimer()
+		{
+			timerDB.Interval = 10000;
+			timerDB.Tick += timerTick;
+			timerDB.Enabled = true;
+		}
+		// Временная запись в базу данных каждые 10 секунд
+		internal void timerTick(object sender, EventArgs e)
+		{
+			// Если задача не перетаскивается и не редактируется
+			if(!act && !compl)
+			{
+				// Прежде чем записывать, удаляем все задачи связанные с текущим пользователем
+				conn.Delete(1);
+				for (int i = 0; i < year[1].listMonth.Count; i++)
+					for (int j = 0; j < year[1].listMonth[i].listDay.Count; j++)
+						foreach (Сalendar.Case cs in year[1].listMonth[i].listDay[j].cases)
+							conn.Write(cs, year[1].yearInt, i, j);
+			}
 		}
 		
 		// Коллекция для хранения дней недели
@@ -60,22 +107,10 @@ namespace Construct
 		internal string[] wn = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 		internal Dictionary<string, int> dayWeek = new Dictionary<string, int>();
 		// Пустая панелька
-		internal static Label labVoid = Core.CreateLab(panWeekMain, 3, 28, 170, 30, 10, Color.FromArgb(201, 201, 201));
+		internal static Label labVoid = Core.CreateLab(panWeekMain, 3, 28, 170, 30, 10, Color.FromArgb(175, 175, 175));
 		// Метод создающий дни недели, которые отображаются на экран, размер панельки дня 175x600 px
 		internal void InitializeWeek()
-		{
-			// Здесь возможно будет чтение из базы данных
-			//***																												// Временное заполнение классов
-			year[1].listMonth[2].listDay[24].cases.Add(new Сalendar.Case("Тест", "11:11", "Да да я", Color.BlueViolet, Color.White));
-			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Позавтракать", "09:00", "Чтобы вырасти, нужно хорошо питаться", Color.BlueViolet, Color.White));
-			year[1].listMonth[3].listDay[23].cases.Add(new Сalendar.Case("Поужинать", "12:00", "Чтобы вырасти, нужно хорошо питаться x2", Color.BlueViolet, Color.White));
-			year[1].listMonth[3].listDay[25].cases.Add(new Сalendar.Case("Пара", "09:45-11:15", "Пара по 1С", Color.BlueViolet, Color.White));
-			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите", Color.BlueViolet, Color.White));
-			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "222", Color.BlueViolet, Color.White));
-			year[1].listMonth[3].listDay[26].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "333", Color.BlueViolet, Color.White));
-			year[1].listMonth[3].listDay[29].cases.Add(new Сalendar.Case("Пара", "13:40-15:10", "Памагите", Color.BlueViolet, Color.White));
-			//***
-			
+		{			
 			for (int i = 0; i < 7; i++)
 				dayWeek.Add(wn[i], i);
 			// Определяем начальные день и месяц
@@ -128,6 +163,8 @@ namespace Construct
 				{
 					days[i].panCase.Add(days[i].Copy_Case(days[i].panDay, 3, days[i].posBot, cs.nameCase, cs.lastTime, cs.description, cs.colorCase, cs.colorText));
 					days[i].posBot += days[i].panCase[0].Height + 3;		// Изменить индекс (0)	!!!
+					// Обновляем экран чтобы сразу отрисовать задачу
+					Application.DoEvents();
 				}
 				// Выделяем текущий день
 				if (days[i].date.Year == DateTime.Now.Year && days[i].date.Month == DateTime.Now.Month && days[i].date.Day == DateTime.Now.Day)
