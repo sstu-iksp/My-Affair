@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 
 namespace Construct
 {
-	// Здесь хранятся методы, которые выводят что-либо на экран 		*В РАЗРАБОТКЕ*
 	partial class MainForm
 	{
 		// Лейбл для задачи "Редактировать"
@@ -93,7 +92,7 @@ namespace Construct
 			labColor[2].BackColor = Color.FromArgb(220, 40, 40);
 			labColor[3].BackColor = Color.FromArgb(250, 220, 40);
 			labColor[4].BackColor = Color.FromArgb(130, 130, 130);
-			labColor[5].BackColor = Color.BlueViolet;
+			labColor[5].BackColor = Color.FromArgb(150, 0, 250);
 			labColor[6].BackColor = Color.FromArgb(70, 60, 130);
 			labColor[7].BackColor = Color.FromArgb(250, 115, 45);
 		}

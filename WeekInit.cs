@@ -78,8 +78,8 @@ namespace Construct
 				if (e.Button == MouseButtons.Left && !compl)
 				{
 					//  Здесь будет метод, который создает пустую задачу с возможность ее заполнения
-					CaseAdd(Copy_Case(panDay, 3, posBot, "NameCase", "00:00", "Description", Color.BlueViolet, Color.White));
-					year[1].listMonth[date.Month - 1].listDay[date.Day - 1].cases.Add(new Сalendar.Case("NameCase", "00:00", "Description", Color.BlueViolet, Color.White));		// <<< ###
+					CaseAdd(Copy_Case(panDay, 3, posBot, "NameCase", "00:00", "Description", Color.FromArgb(150, 0, 250), Color.FromArgb(255, 255, 255)));
+					year[1].listMonth[date.Month - 1].listDay[date.Day - 1].cases.Add(new Сalendar.Case("NameCase", "00:00", "Description", Color.FromArgb(150, 0, 250), Color.FromArgb(255, 255, 255)));		// <<< ###
 					// ***
 					labAddCase.Text = panCase.Count() + " ";				// -------------------------------------------------- DEBAG
 					// ***
@@ -147,7 +147,7 @@ namespace Construct
 				posBot = posTop;
 				foreach (Panel pan in panCase)
 				{
-					if (posBot == posLab)					// ***
+					if (posBot == posLab)
 						posBot += labVoid.Height + 3;
 					pan.Top = posBot;
 					posBot += pan.Height + 3;
