@@ -9,14 +9,17 @@ using System.IO;
 namespace Construct
 {
 	// 																						В РАЗРАБОТКЕ !!!
+	// Класс реализован по паттерну "Одиночка"
 	sealed class Connection
 	{
 		// Название базы данных
 		readonly string _dbFileName;
 		// Переменная для соединения
-       	readonly SQLiteConnection _dbConn;
-        // Переменная для команд
-        readonly SQLiteCommand _sqlCmd;
+		readonly SQLiteConnection _dbConn;
+		// Переменная для команд
+		readonly SQLiteCommand _sqlCmd;
+		// Номер пользователя
+		internal int user;
        	
 		static Connection _instance;
 		
@@ -43,10 +46,8 @@ namespace Construct
 				SQLiteConnection.CreateFile(_dbFileName);
 			// Вызываем метод, который создаст начальные таблицы
 			Create();
-			// Осуществляем чтение с базы данных
-			Read(1);								// Переместить на форму входа и сделать для конкретного пользователя!!!
 		}
-		
+		// Метод создающий таблицы
 		void Create()
 		{
 			try
@@ -70,7 +71,6 @@ namespace Construct
 										"FOREIGN KEY (userId) REFERENCES User(idUser));" +
 										"CREATE TABLE IF NOT EXISTS User(" +
 										"idUser INTEGER PRIMARY KEY," +
-										"nameUser TEXT," +
 										"login TEXT," +
 										"password TEXT," +
 										"mail TEXT);";
@@ -82,8 +82,8 @@ namespace Construct
 				MessageBox.Show("Error: " + ex.Message);
 			}
 		}
-		
-		internal void Write(Сalendar.Case cs, int year, int month, int day)
+		// Метод записывающий новую задачу в базу данных для вошедшего пользователя
+		internal void WriteCase(Сalendar.Case cs, int year, int month, int day)
 		{
 			try
 			{
@@ -111,7 +111,7 @@ namespace Construct
 				colDate = year + ":" + month + ":" + day;
 				
 				commandText = "INSERT INTO Cases (idCase, nameCase, lastTime, description, colorCase, colorText, priority, date, userId) " +
-				"VALUES (NULL, '" + cs.nameCase + "', '" + cs.lastTime + "', '" + cs.description + "', '" + colCase + "', '" + colText + "', " + 0 + ", '" + colDate + "', " + 1 + ")";
+				"VALUES (NULL, '" + cs.nameCase + "', '" + cs.lastTime + "', '" + cs.description + "', '" + colCase + "', '" + colText + "', " + 0 + ", '" + colDate + "', " + user + ")";
 				
 				// Задаем текст запроса
 				_sqlCmd.CommandText = commandText;
@@ -123,7 +123,106 @@ namespace Construct
 				MessageBox.Show("Error: " + ex.Message);
 			}
 		}
-		
+		// Метод записвающий нового пользователя в базу данных
+		internal void WriteUser(string login, string password, string mail)
+		{
+			try
+			{
+				// Проверяем подключение к базе данных и открываем его в случае отсутсвия
+				if (_dbConn.State != ConnectionState.Open)
+					_dbConn.Open();
+				
+				// Задаем текст запроса
+				_sqlCmd.CommandText = 	"INSERT INTO User (idUser, login, password, mail) " +
+										"VALUES (NULL, '" + login + "', '" + password + "', '" + mail + "')";
+				// Выполняем запрос
+				_sqlCmd.ExecuteNonQuery();
+			}
+			catch (SQLiteException ex)
+			{               
+				MessageBox.Show("Error: " + ex.Message);
+			}
+		}
+		// Метод проверяющий верность введенных данных ***, return: idUser - если данные почта или логин существуют и введенный пароль верен
+		//															2 - если введенный пароль неверный
+		internal int CheckPass(string login, string password)
+		{
+			try
+			{
+				// Проверяем подключение к базе данных и открываем его в случае отсутсвия
+				if (_dbConn.State != ConnectionState.Open)
+					_dbConn.Open();
+				
+				// Задаем текст запроса
+				_sqlCmd.CommandText = 	"SELECT * FROM User";
+				// Запускаем чтение данных
+				using (SQLiteDataReader reader = _sqlCmd.ExecuteReader())
+				{
+					if (reader.HasRows)
+					{
+						while (reader.Read()) 
+						{
+							var idUser = reader.GetValue(0);
+							var loginR = reader.GetValue(1);
+							var passwordR = reader.GetValue(2);
+							var mailR = reader.GetValue(2);
+							
+							if (loginR.ToString() == login || mailR.ToString() == login)
+							{
+								if (passwordR.ToString() == password)
+									return Convert.ToInt32(idUser);
+								return 2;
+							}
+						}
+					}
+				}
+				return 0;
+			}
+			catch (SQLiteException ex)
+			{               
+				MessageBox.Show("Error: " + ex.Message);
+				return -1;
+			}
+		}
+		// Метод проверяющий наличие существования логина и почты в базе данных, return: 0 - без совпадений, 1 - совпал логин, 2 - совпала почта
+		internal int Check(string login, string mail)
+		{
+			try
+			{
+				// Проверяем подключение к базе данных и открываем его в случае отсутсвия
+				if (_dbConn.State != ConnectionState.Open)
+					_dbConn.Open();
+				
+				// Задаем текст запроса
+				_sqlCmd.CommandText = 	"SELECT * FROM User";
+				// Запускаем чтение данных
+				using (SQLiteDataReader reader = _sqlCmd.ExecuteReader())
+				{
+					if (reader.HasRows)
+					{
+						while (reader.Read()) 
+						{
+							var idUser = reader.GetValue(0);
+							var loginR = reader.GetValue(1);
+							var passwordR = reader.GetValue(2);
+							var mailR = reader.GetValue(2);
+							
+							if (loginR.ToString() == login)
+								return 1;
+							if (mailR.ToString() == mail)
+								return 2;
+						}
+					}
+				}
+				return 0;
+			}
+			catch (SQLiteException ex)
+			{               
+				MessageBox.Show("Error: " + ex.Message);
+				return -1;
+			}
+		}
+		// Метод считывающий задачи определенного пользователя
 		internal void Read(int num)
 		{
 			try
@@ -167,7 +266,7 @@ namespace Construct
 				MessageBox.Show("Error: " + ex.Message);
 			}
 		}
-		
+		// Метод удаляющий задачи определенного пользователя
 		internal void Delete(int num)
 		{
 			try
@@ -187,19 +286,6 @@ namespace Construct
 			}		
 		}
 		
-		/*
-		// Задаем текст запроса
-		_sqlCmd.CommandText = 	"INSERT INTO User (idUser, nameUser, login, password, mail) " +
-								"VALUES (NULL, 'ProWhat', 'ProWhat', '123qwerty', 'nik@gmail.com')";
-		// Выполняем запрос
-		_sqlCmd.ExecuteNonQuery();
-		
-		// Задаем текст запроса
-		_sqlCmd.CommandText = 	"INSERT INTO Cases (idCase, nameCase, lastTime, description, colorCase, colorText, priority, date, userId) " +
-								"VALUES (NULL, 'Поесть', '12:00', 'Нужно хорошо питаться', 'Blue', 'White', 0, '2021:05:17', 1)";
-		// Выполняем запрос
-		_sqlCmd.ExecuteNonQuery();
-		*/
 	}
 }
 

@@ -51,7 +51,7 @@ namespace Construct
 			// Инициализация недели
 			InitializeWeek();
 			// Инициализация регистрации/авторизации
-			InitializeReg();
+			InitializeEnt();
 			// Инициализация различных элементов
 			InitializeElements();
 			// Инициализация календаря
@@ -65,15 +65,14 @@ namespace Construct
 		// Обновляет базу данных после закрытия
 		internal void FormClosed_upd(object sender, EventArgs e)
 		{
-			// Если задача не перетаскивается и не редактируется
-			if(!act && !compl)
+			if (conn.user != 0)
 			{
 				// Прежде чем записывать, удаляем все задачи связанные с текущим пользователем
-				conn.Delete(1);
+				conn.Delete(conn.user);
 				for (int i = 0; i < year[1].listMonth.Count; i++)
 					for (int j = 0; j < year[1].listMonth[i].listDay.Count; j++)
 						foreach (Сalendar.Case cs in year[1].listMonth[i].listDay[j].cases)
-							conn.Write(cs, year[1].yearInt, i, j);
+							conn.WriteCase(cs, year[1].yearInt, i, j);
 			}
 		}
 		
@@ -82,22 +81,22 @@ namespace Construct
 		
 		internal void initTimer()
 		{
-			timerDB.Interval = 10000;
+			timerDB.Interval = 5000;
 			timerDB.Tick += timerTick;
-			timerDB.Enabled = true;
+			timerDB.Enabled = false;
 		}
-		// Временная запись в базу данных каждые 10 секунд
+		// Временная запись в базу данных каждые 5 секунд
 		internal void timerTick(object sender, EventArgs e)
 		{
 			// Если задача не перетаскивается и не редактируется
 			if(!act && !compl)
 			{
 				// Прежде чем записывать, удаляем все задачи связанные с текущим пользователем
-				conn.Delete(1);
+				conn.Delete(conn.user);
 				for (int i = 0; i < year[1].listMonth.Count; i++)
 					for (int j = 0; j < year[1].listMonth[i].listDay.Count; j++)
 						foreach (Сalendar.Case cs in year[1].listMonth[i].listDay[j].cases)
-							conn.Write(cs, year[1].yearInt, i, j);
+							conn.WriteCase(cs, year[1].yearInt, i, j);
 			}
 		}
 		
@@ -110,7 +109,7 @@ namespace Construct
 		internal static Label labVoid = Core.CreateLab(panWeekMain, 3, 28, 170, 30, 10, Color.FromArgb(175, 175, 175));
 		// Метод создающий дни недели, которые отображаются на экран, размер панельки дня 175x600 px
 		internal void InitializeWeek()
-		{			
+		{
 			for (int i = 0; i < 7; i++)
 				dayWeek.Add(wn[i], i);
 			// Определяем начальные день и месяц

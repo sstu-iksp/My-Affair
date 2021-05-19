@@ -12,8 +12,25 @@ namespace Construct
 {
 	partial class MainForm
 	{
+		
+		internal interface IObserver
+		{
+			// Получает обновление от издателя
+			void Update(MainForm.Day subject);
+		}
+		
+		internal interface ISubject
+		{
+			// Присоединяет наблюдателя к издателю.
+			void Attach(IObserver observer);
+			// Отсоединяет наблюдателя от издателя.
+			void Detach(IObserver observer);
+			// Уведомляет всех наблюдателей о событии.
+			void Notify();
+		}
+		
 		// Класс отвечающий за ввод дней недели на экран
-		internal class Day											// 		*В РАЗРАБОТКЕ*
+		internal class Day : ISubject											// 		*В РАЗРАБОТКЕ*
 		{
 			// Переменная для запоминания даты
 			internal DateTime date;
@@ -60,6 +77,27 @@ namespace Construct
 				posTop = labDay.Height;
 				posBot = labDay.Height;
 			}
+																									// ***
+			// Список подписчиков. В реальной жизни список подписчиков может
+			// храниться в более подробном виде (классифицируется по типу события и т.д.)
+			List<IObserver> _observers = new List<IObserver>();
+			// Методы управления подпиской
+			public void Attach(IObserver observer)
+			{
+				_observers.Add(observer);
+			}
+			// Методы управления подпиской
+			public void Detach(IObserver observer)
+			{
+				_observers.Remove(observer);
+			}
+			// Запуск обновления в каждом подписчике
+			public void Notify()
+			{
+				foreach (var observer in _observers)
+					observer.Update(this);
+			}
+																									// ***
 			// Метод добавляющий новую задачу
 			internal void CaseAdd(Panel pan)
 			{
