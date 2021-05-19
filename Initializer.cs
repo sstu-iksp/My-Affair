@@ -12,6 +12,8 @@ namespace Construct
 {
 	partial class MainForm
 	{
+		// Лейбл для задачи "Откатить"
+		internal static Label labBack = Core.CreateLab(panWeekMain, 220, 5, 30, 30, 7, "ctrl + z", Color.FromArgb(150, 75, 175));
 		// Лейбл для задачи "Редактировать"
 		internal static Label labCase1 = Core.CreateLab(panWeekMain, 0, 0, 100, 20, 8, "Редактировать", Color.FromArgb(150, 35, 255));
 		// Лейбл для задачи "Изменить цвет"
@@ -52,8 +54,20 @@ namespace Construct
 			Core.EventAdd(labExit, MouseClick_labExit, MouseEnter_labExit, MouseLeave_labExit);
 			labExit.MouseClick += (MouseClick_Outside);					// ###
 			
+			labBack.MouseClick += (MouseClick_labBack);		// Тест
+			
 			labInit();
 		}
+		// Событие нажатия на кнопку "откатить"
+		internal void MouseClick_labBack(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				
+				DrawWeek(ddd, mmm, false);
+			}
+		}
+		
 		// Метод отображающий кнопки задачи
 		internal static void caseViewBut(int left, int top, int width)
 		{
@@ -307,6 +321,23 @@ namespace Construct
 		{
 			if (e.Button == MouseButtons.Left && !compl)
 			{
+				// Прежде чем записывать, удаляем все задачи связанные с текущим пользователем
+				conn.Delete(conn.user);
+				for (int i = 0; i < year[1].listMonth.Count; i++)
+					for (int j = 0; j < year[1].listMonth[i].listDay.Count; j++)
+						foreach (Сalendar.Case cs in year[1].listMonth[i].listDay[j].cases)
+							conn.WriteCase(cs, year[1].yearInt, i, j);
+				// Выключаем таймер					// !!!***!!!
+				timerDB.Enabled = false;
+				// Очищаем данные вышедшего пользователя
+				for (int i = 0; i < year[1].listMonth.Count; i++)
+					for (int j = 0; j < year[1].listMonth[i].listDay.Count; j++)
+						year[1].listMonth[i].listDay[j].cases.Clear();
+				
+				DrawWeek(ddd, mmm, false);
+				
+				conn.user = 0;
+				
 				// Здесь будет проверка на правельность введеннх данных
 				panRegMain.Visible = true;
 				panWeekMain.Visible = false;

@@ -38,12 +38,14 @@ namespace Construct
 				monthInt = number;
 				
 				for (int i = 0; i < DateTime.DaysInMonth(year, monthInt); i++)
+				{
 					listDay.Add(new Day(i));
+				}
 			}
 			
 		}
 		
-		internal class Day 
+		internal class Day : MainForm.IObserver
 		{
 			internal int dayInt;			
 			internal List<Case> cases = new List<Case>();
@@ -51,6 +53,29 @@ namespace Construct
 			internal Day(int day)
 			{
 				this.dayInt = day;
+			}
+			
+			public void Update(MainForm.Day subject)
+			{
+				cases.Clear();
+				// Переменные для записи значений
+				string name = "";
+				string time = "";
+				string desc = "";
+				
+				foreach (Panel pan in subject.panCase)
+				{
+					foreach (Control ctrl in pan.Controls)
+					{
+						if (ctrl.TabIndex == 0)			name = ctrl.Text;
+						else if (ctrl.TabIndex == 1)	time = ctrl.Text;
+						else if (ctrl.TabIndex == 2)	desc = ctrl.Text;
+					}
+					Color colorCase = pan.Controls[0].BackColor;
+					Color colorText = pan.Controls[0].ForeColor;
+					
+					cases.Add(new Case(name, time, desc, colorCase, colorText));
+				}
 			}
 			
 		}
